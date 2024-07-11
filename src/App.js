@@ -1,6 +1,6 @@
 // src/App.js
-import React from 'react';
-import ReactFlow, { MiniMap, Controls, Background } from 'reactflow';
+import React, { useState } from 'react';
+import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 const initialNodes = [
@@ -15,9 +15,16 @@ const initialEdges = [
 ];
 
 function App() {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges] = useEdgesState(initialEdges);
+
   return (
     <div style={{ height: '100vh', width: '100%' }}>
-      <ReactFlow nodes={initialNodes} edges={initialEdges}>
+      <ReactFlow 
+        nodes={nodes} 
+        edges={edges} 
+        onNodesChange={onNodesChange}
+      >
         <MiniMap />
         <Controls />
         <Background />
