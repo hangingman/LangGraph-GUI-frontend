@@ -5,10 +5,9 @@ import TextUpdaterNode from './TextUpdaterNode';
 import './text-updater-node.css';
 
 const initialNodes = [
-  { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
-  { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 100 } },
-  { id: '3', data: { label: 'Node 3' }, position: { x: 400, y: 100 } },
-  { id: '4', type: 'textUpdater', data: { label: 'Editable Node' }, position: { x: 250, y: 200 } },
+  { id: '1', type: 'textUpdater', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
+  { id: '2', type: 'textUpdater', data: { label: 'Node 2' }, position: { x: 100, y: 200 } },
+  { id: '3', type: 'textUpdater', data: { label: 'Node 3' }, position: { x: 400, y: 200 } },
 ];
 
 const initialEdges = [
@@ -22,19 +21,19 @@ function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [contextMenu, setContextMenu] = useState(null);
-  const [nodeIdCounter, setNodeIdCounter] = useState(nodes.length + 1); // Counter for node IDs
+  const [nodeIdCounter, setNodeIdCounter] = useState(nodes.length + 1);
   const { screenToFlowPosition } = useReactFlow();
 
   const handleAddNode = useCallback((event) => {
     const newPosition = screenToFlowPosition({ x: contextMenu.mouseX, y: contextMenu.mouseY });
     const newNode = {
-      id: nodeIdCounter.toString(), // Use the counter for the new node ID
+      id: nodeIdCounter.toString(),
       type: 'textUpdater',
       data: { label: `Node ${nodeIdCounter}` },
       position: newPosition,
     };
     setNodes((nds) => nds.concat(newNode));
-    setNodeIdCounter(nodeIdCounter + 1); // Increment the counter
+    setNodeIdCounter(nodeIdCounter + 1);
     setContextMenu(null);
   }, [contextMenu, nodeIdCounter, setNodes, screenToFlowPosition]);
 
