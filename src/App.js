@@ -97,27 +97,46 @@ function Flow() {
     setEdges([]);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const flowData = {
       nodes,
       edges,
     };
-    localStorage.setItem('flowData', JSON.stringify(flowData));
+    const blob = new Blob([JSON.stringify(flowData, null, 2)], { type: 'application/json' });
+    const fileHandle = await window.showSaveFilePicker({
+      suggestedName: 'flow.json',
+      types: [
+        {
+          description: 'JSON Files',
+          accept: { 'application/json': ['.json'] },
+        },
+      ],
+    });
+    const writable = await fileHandle.createWritable();
+    await writable.write(blob);
+    await writable.close();
     alert('Flow saved!');
   };
 
-  const handleLoad = () => {
-    const flowData = JSON.parse(localStorage.getItem('flowData'));
-    if (flowData) {
-      setNodes(flowData.nodes);
-      setEdges(flowData.edges);
-    } else {
-      alert('No saved flow found');
-    }
+  const handleLoad = async () => {
+    const [fileHandle] = await window.showOpenFilePicker({
+      types: [
+        {
+          description: 'JSON Files',
+          accept: { 'application/json': ['.json'] },
+        },
+      ],
+      multiple: false,
+    });
+    const file = await fileHandle.getFile();
+    const contents = await file.text();
+    const flowData = JSON.parse(contents);
+    setNodes(flowData.nodes);
+    setEdges(flowData.edges);
   };
 
   const handleRun = () => {
-    alert('No Imp this buttom');
+    alert('No Imp this button');
   };
 
   return (
