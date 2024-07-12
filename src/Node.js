@@ -22,4 +22,20 @@ function Node({ data, isConnectable }) {
   );
 }
 
+export const addNode = (nodes, setNodes, nodeIdCounter, setNodeIdCounter, newPosition) => {
+  const newNode = {
+    id: nodeIdCounter.toString(),
+    type: 'textUpdater',
+    data: { label: `Node ${nodeIdCounter}`, description: '' },
+    position: newPosition,
+  };
+  setNodes((nds) => nds.concat(newNode));
+  setNodeIdCounter(nodeIdCounter + 1);
+};
+
+export const deleteNode = (nodes, setNodes, edges, setEdges, nodeId) => {
+  setNodes((nds) => nds.filter((node) => node.id !== nodeId));
+  setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
+};
+
 export default memo(Node);

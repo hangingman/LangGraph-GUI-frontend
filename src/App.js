@@ -3,27 +3,16 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, ReactFlowProvider, useReactFlow, addEdge } from 'reactflow';
 import 'reactflow/dist/style.css';
-import Node from './Node';
+import Node, { addNode, deleteNode } from './Node';
 import { saveFlow, loadFlow } from './FileUtils';
-
-const initialNodes = [
-  { id: '1', type: 'textUpdater', data: { label: 'Node 1', description: '' }, position: { x: 50, y: 150 } },
-  { id: '2', type: 'textUpdater', data: { label: 'Node 2', description: '' }, position: { x: 300, y: 100 } },
-  { id: '3', type: 'textUpdater', data: { label: 'Node 3', description: '' }, position: { x: 300, y: 400 } },
-];
-
-const initialEdges = [
-  { id: 'e1-2', source: '1', target: '2', animated: true },
-  { id: 'e1-3', source: '1', target: '3', animated: true },
-];
 
 const nodeTypes = { textUpdater: Node };
 
 function Flow() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [contextMenu, setContextMenu] = useState(null);
-  const [nodeIdCounter, setNodeIdCounter] = useState(nodes.length + 1);
+  const [nodeIdCounter, setNodeIdCounter] = useState(1);
   const { screenToFlowPosition } = useReactFlow();
   const menuBarRef = useRef(null);
   const [canvasHeight, setCanvasHeight] = useState(window.innerHeight);
@@ -44,24 +33,16 @@ function Flow() {
 
   const handleAddNode = useCallback((event) => {
     const newPosition = screenToFlowPosition({ x: contextMenu.mouseX, y: contextMenu.mouseY });
-    const newNode = {
-      id: nodeIdCounter.toString(),
-      type: 'textUpdater',
-      data: { label: `Node ${nodeIdCounter}`, description: '' },
-      position: newPosition,
-    };
-    setNodes((nds) => nds.concat(newNode));
-    setNodeIdCounter(nodeIdCounter + 1);
+    addNode(nodes, setNodes, nodeIdCounter, setNodeIdCounter, newPosition);
     setContextMenu(null);
   }, [contextMenu, nodeIdCounter, setNodes, screenToFlowPosition]);
 
   const handleDeleteNode = useCallback(() => {
     if (contextMenu && contextMenu.nodeId) {
-      setNodes((nds) => nds.filter((node) => node.id !== contextMenu.nodeId));
-      setEdges((eds) => eds.filter((edge) => edge.source !== contextMenu.nodeId && edge.target !== contextMenu.nodeId));
+      deleteNode(nodes, setNodes, edges, setEdges, contextMenu.nodeId);
     }
     setContextMenu(null);
-  }, [contextMenu, setNodes, setEdges]);
+  }, [contextMenu, setNodes, setEdges, nodes, edges]);
 
   const handleDeleteEdge = useCallback(() => {
     if (contextMenu && contextMenu.edgeId) {
