@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState } from 'reactflow';
+import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, ReactFlowProvider, useReactFlow } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 const initialNodes = [
@@ -13,25 +13,24 @@ const initialEdges = [
   { id: 'e1-3', source: '1', target: '3', animated: true },
 ];
 
-function App() {
+function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [contextMenu, setContextMenu] = useState(null);
   const [nodeIdCounter, setNodeIdCounter] = useState(nodes.length + 1); // Counter for node IDs
+  const { project } = useReactFlow();
 
   const handleAddNode = useCallback((event) => {
+    const newPosition = project({ x: contextMenu.mouseX, y: contextMenu.mouseY });
     const newNode = {
       id: nodeIdCounter.toString(), // Use the counter for the new node ID
       data: { label: `Node ${nodeIdCounter}` },
-      position: {
-        x: contextMenu.mouseX - event.target.getBoundingClientRect().left,
-        y: contextMenu.mouseY - event.target.getBoundingClientRect().top,
-      },
+      position: newPosition,
     };
     setNodes((nds) => nds.concat(newNode));
     setNodeIdCounter(nodeIdCounter + 1); // Increment the counter
     setContextMenu(null);
-  }, [contextMenu, nodeIdCounter, setNodes]);
+  }, [contextMenu, nodeIdCounter, setNodes, project]);
 
   const handleDeleteNode = useCallback(() => {
     if (contextMenu && contextMenu.nodeId) {
@@ -100,6 +99,14 @@ function App() {
         </div>
       )}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ReactFlowProvider>
+      <Flow />
+    </ReactFlowProvider>
   );
 }
 
