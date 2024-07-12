@@ -1,22 +1,13 @@
 // FileUtils.js
 
 import NodeData from './NodeData';
-import { createEdge } from './Edge'; // Import the createEdge function
+import { createEdge } from './Edge';
 
-export const saveFlow = async (nodes, edges, nodeIdCounter) => {
+export const saveFlow = async (nodes, nodeIdCounter) => {
   const nodesData = nodes.map((node) => NodeData.fromReactFlowNode(node));
-  const edgesData = edges.map((edge) => ({
-    id: edge.id,
-    source: edge.source,
-    target: edge.target,
-    animated: edge.animated,
-    style: edge.style,
-    markerEnd: edge.markerEnd,
-  }));
 
   const flowData = {
-    nodes: nodesData.map(node => node.toDict()),
-    edges: edgesData,
+    nodes: nodesData.map((node) => node.toDict()),
     node_counter: nodeIdCounter,
   };
 
@@ -36,7 +27,7 @@ export const saveFlow = async (nodes, edges, nodeIdCounter) => {
   alert('Flow saved!');
 };
 
-export const loadFlow = async (setEdges) => {
+export const loadFlow = async (setEdges, setNodes) => {
   const [fileHandle] = await window.showOpenFilePicker({
     types: [
       {
@@ -50,16 +41,19 @@ export const loadFlow = async (setEdges) => {
   const contents = await file.text();
   const flowData = JSON.parse(contents);
 
-  const loadedNodes = (flowData.nodes || []).map(nodeData => NodeData.fromDict(nodeData).toReactFlowNode());
+  const loadedNodes = (flowData.nodes || []).map((nodeData) => NodeData.fromDict(nodeData).toReactFlowNode());
   const loadedEdges = [];
 
-  // Create edges based on nexts attribute of nodes
-  loadedNodes.forEach(node => {
+  // Recreate edges based on nexts attribute of nodes
+  loadedNodes.forEach((node) => {
     const nodeData = NodeData.fromDict(node.data);
-    nodeData.nexts.forEach(nextId => {
-      createEdge(loadedEdges, setEdges, { source: node.id, target: nextId });
+    nodeData.nexts.forEach((nextId) => {
+      createEdge(loadedEdges, setEdges, { source: node.id, target: nextId }, loadedNodes, setNodes);
     });
   });
 
-  return { loadedNodes, nodeCounter: flowData.node_counter || 1 };
+  setNodes(loadedNodes);
+  setEdges(loadedEdges);
+
+  return { loadedNodes, loadedEdges, nodeCounter: flowData.node_counter || 1 };
 };

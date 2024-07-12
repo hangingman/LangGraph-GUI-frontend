@@ -26,7 +26,7 @@ export const addNode = (nodes, setNodes, nodeIdCounter, setNodeIdCounter, newPos
   const newNode = {
     id: nodeIdCounter.toString(),
     type: 'textUpdater',
-    data: { label: `Node ${nodeIdCounter}`, description: '' },
+    data: { label: `Node ${nodeIdCounter}`, description: '', nexts: [], prev: [] },
     position: newPosition,
   };
   setNodes((nds) => nds.concat(newNode));

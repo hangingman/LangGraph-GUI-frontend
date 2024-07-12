@@ -47,10 +47,10 @@ function Flow() {
 
   const handleDeleteEdge = useCallback(() => {
     if (contextMenu && contextMenu.edgeId) {
-      deleteEdge(edges, setEdges, contextMenu.edgeId);
+      deleteEdge(edges, setEdges, contextMenu.edgeId, nodes, setNodes);
     }
     setContextMenu(null);
-  }, [contextMenu, setEdges, edges]);
+  }, [contextMenu, setEdges, edges, nodes, setNodes]);
 
   const handleNodeContextMenu = useCallback((event, node) => {
     event.preventDefault();
@@ -88,7 +88,7 @@ function Flow() {
     setContextMenu(null);
   };
 
-  const onConnect = useCallback((params) => createEdge(edges, setEdges, params), [setEdges, edges]);
+  const onConnect = useCallback((params) => createEdge(edges, setEdges, params, nodes, setNodes), [setEdges, edges, nodes, setNodes]);
 
   const handleNew = () => {
     setNodes([]);
@@ -96,12 +96,13 @@ function Flow() {
   };
 
   const handleSave = async () => {
-    await saveFlow(nodes, edges, nodeIdCounter);
+    await saveFlow(nodes, nodeIdCounter);
   };
 
   const handleLoad = async () => {
-    const { loadedNodes, nodeCounter } = await loadFlow(setEdges);
+    const { loadedNodes, loadedEdges, nodeCounter } = await loadFlow(setEdges, setNodes);
     setNodes(loadedNodes);
+    setEdges(loadedEdges);
     setNodeIdCounter(nodeCounter);
   };
 
