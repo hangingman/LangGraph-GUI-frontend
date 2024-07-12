@@ -27,7 +27,7 @@ export const saveFlow = async (nodes, nodeIdCounter) => {
   alert('Flow saved!');
 };
 
-export const loadFlow = async (setEdges, setNodes) => {
+export const loadFlow = async (setEdges, setNodes, setNodeIdCounter) => {
   const [fileHandle] = await window.showOpenFilePicker({
     types: [
       {
@@ -42,17 +42,23 @@ export const loadFlow = async (setEdges, setNodes) => {
   const flowData = JSON.parse(contents);
 
   const loadedNodes = (flowData.nodes || []).map((nodeData) => NodeData.fromDict(nodeData).toReactFlowNode());
-  const loadedEdges = [];
 
-  // Recreate edges based on nexts attribute of nodes
+  // First, set the nodes
+  setNodes(loadedNodes);
+
+  // Then, create edges
+  const loadedEdges = [];
   loadedNodes.forEach((node) => {
     node.data.nexts.forEach((nextId) => {
-      createEdge(loadedEdges, setEdges, { source: node.id, target: nextId }, loadedNodes, setNodes);
+      const newEdge = createEdge(loadedEdges, setEdges, { source: node.id, target: nextId }, loadedNodes, setNodes);
+      if (newEdge) {
+        loadedEdges.push(newEdge);
+      }
     });
   });
 
-  setNodes(loadedNodes);
   setEdges(loadedEdges);
 
-  return { nodeCounter: flowData.node_counter || 1 };
+  // Set node counter
+  setNodeIdCounter(flowData.node_counter || 1);
 };

@@ -101,9 +101,9 @@ function Flow() {
   };
 
   const handleLoad = async () => {
-    const { nodeCounter } = await loadFlow(setEdges, setNodes);
-    setNodeIdCounter(nodeCounter);
+    await loadFlow(setEdges, setNodes, setNodeIdCounter);
   };
+  
 
   const handleRun = () => {
     alert('No Imp this button');

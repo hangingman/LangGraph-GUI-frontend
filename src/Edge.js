@@ -5,7 +5,7 @@ import { addEdge } from 'reactflow';
 export const createEdge = (edges, setEdges, params, nodes, setNodes) => {
   const { source, target } = params;
 
-  setEdges((eds) => addEdge({
+  const newEdge = {
     ...params,
     id: `e${source}-${target}`,
     animated: false,
@@ -15,7 +15,9 @@ export const createEdge = (edges, setEdges, params, nodes, setNodes) => {
       width: 20,
       height: 20,
     },
-  }, eds));
+  };
+
+  setEdges((eds) => addEdge(newEdge, eds));
 
   setNodes((nds) =>
     nds.map((node) => {
@@ -28,6 +30,8 @@ export const createEdge = (edges, setEdges, params, nodes, setNodes) => {
       return node;
     })
   );
+
+  return newEdge;
 };
 
 export const deleteEdge = (edges, setEdges, edgeId, nodes, setNodes) => {
