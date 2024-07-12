@@ -92,8 +92,42 @@ function Flow() {
 
   const onConnect = useCallback((params) => setEdges((eds) => addEdge({ ...params, id: `e${params.source}-${params.target}`, animated: true }, eds)), [setEdges]);
 
+  const handleNew = () => {
+    setNodes([]);
+    setEdges([]);
+  };
+
+  const handleSave = () => {
+    const flowData = {
+      nodes,
+      edges,
+    };
+    localStorage.setItem('flowData', JSON.stringify(flowData));
+    alert('Flow saved!');
+  };
+
+  const handleLoad = () => {
+    const flowData = JSON.parse(localStorage.getItem('flowData'));
+    if (flowData) {
+      setNodes(flowData.nodes);
+      setEdges(flowData.edges);
+    } else {
+      alert('No saved flow found');
+    }
+  };
+
+  const handleRun = () => {
+    alert('No Imp this buttom');
+  };
+
   return (
     <div style={{ height: '100vh', width: '100%' }}>
+      <nav style={{ padding: '10px', borderBottom: '1px solid #ccc', marginBottom: '10px' }}>
+        <button onClick={handleNew}>New</button>
+        <button onClick={handleSave}>Save</button>
+        <button onClick={handleLoad}>Load</button>
+        <button onClick={handleRun}>Run</button>
+      </nav>
       <ReactFlow 
         nodes={nodes} 
         edges={edges} 
