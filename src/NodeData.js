@@ -1,5 +1,18 @@
 class NodeData {
-    constructor(uniq_id, pos_x, pos_y, width, height, nexts, type, name, description, tool, true_next, false_next) {
+    constructor({
+      uniq_id,
+      pos_x,
+      pos_y,
+      width = 200,
+      height = 200,
+      nexts = [],
+      type = 'STEP',
+      name,
+      description = '',
+      tool = '',
+      true_next = null,
+      false_next = null,
+    }) {
       this.uniq_id = uniq_id;
       this.pos_x = pos_x;
       this.pos_y = pos_y;
@@ -15,44 +28,39 @@ class NodeData {
     }
   
     static fromReactFlowNode(node) {
-      return new NodeData(
-        node.id,
-        node.position.x,
-        node.position.y,
-        node.width || 200, // Default width
-        node.height || 200, // Default height
-        [], // We will handle edges separately
-        'STEP', // Default type
-        node.data.label,
-        node.data.description || '',
-        '',
-        null,
-        null
-      );
+      return new NodeData({
+        uniq_id: node.id,
+        pos_x: node.position.x,
+        pos_y: node.position.y,
+        width: node.width || 200, // Default width
+        height: node.height || 200, // Default height
+        nexts: node.data.nexts || [], // Handle edges separately
+        type: node.data.type || 'STEP', // Default type
+        name: node.data.label,
+        description: node.data.description || '',
+        tool: node.data.tool || '',
+        true_next: node.data.true_next || null,
+        false_next: node.data.false_next || null,
+      });
     }
   
     static fromDict(data) {
-      return new NodeData(
-        data.uniq_id,
-        data.pos_x,
-        data.pos_y,
-        data.width,
-        data.height,
-        data.nexts,
-        data.type,
-        data.name,
-        data.description,
-        data.tool,
-        data.true_next,
-        data.false_next
-      );
+      return new NodeData(data);
     }
   
     toReactFlowNode() {
       return {
         id: this.uniq_id,
         type: 'textUpdater',
-        data: { label: this.name, description: this.description },
+        data: {
+          label: this.name,
+          description: this.description,
+          nexts: this.nexts,
+          type: this.type,
+          tool: this.tool,
+          true_next: this.true_next,
+          false_next: this.false_next,
+        },
         position: { x: this.pos_x, y: this.pos_y },
         width: this.width,
         height: this.height,
@@ -60,19 +68,25 @@ class NodeData {
     }
   
     toDict() {
+      const {
+        uniq_id, pos_x, pos_y, width, height,
+        nexts, type, name, description,
+        tool, true_next, false_next,
+      } = this;
+  
       return {
-        uniq_id: this.uniq_id,
-        pos_x: this.pos_x,
-        pos_y: this.pos_y,
-        width: this.width,
-        height: this.height,
-        nexts: this.nexts,
-        type: this.type,
-        name: this.name,
-        description: this.description,
-        tool: this.tool,
-        true_next: this.true_next,
-        false_next: this.false_next,
+        uniq_id,
+        pos_x,
+        pos_y,
+        width,
+        height,
+        nexts,
+        type,
+        name,
+        description,
+        tool,
+        true_next,
+        false_next,
       };
     }
   }
