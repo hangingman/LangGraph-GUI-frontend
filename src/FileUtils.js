@@ -1,6 +1,7 @@
 // FileUtils.js
 
 import NodeData from './NodeData';
+import { createEdge } from './Edge'; // Import the createEdge function
 
 export const saveFlow = async (nodes, edges, nodeIdCounter) => {
   const nodesData = nodes.map((node) => NodeData.fromReactFlowNode(node));
@@ -9,6 +10,8 @@ export const saveFlow = async (nodes, edges, nodeIdCounter) => {
     source: edge.source,
     target: edge.target,
     animated: edge.animated,
+    style: edge.style,
+    markerEnd: edge.markerEnd,
   }));
 
   const flowData = {
@@ -33,7 +36,7 @@ export const saveFlow = async (nodes, edges, nodeIdCounter) => {
   alert('Flow saved!');
 };
 
-export const loadFlow = async () => {
+export const loadFlow = async (setEdges) => {
   const [fileHandle] = await window.showOpenFilePicker({
     types: [
       {
@@ -54,14 +57,9 @@ export const loadFlow = async () => {
   loadedNodes.forEach(node => {
     const nodeData = NodeData.fromDict(node.data);
     nodeData.nexts.forEach(nextId => {
-      loadedEdges.push({
-        id: `e${node.id}-${nextId}`,
-        source: node.id,
-        target: nextId,
-        animated: true,
-      });
+      createEdge(loadedEdges, setEdges, { source: node.id, target: nextId });
     });
   });
 
-  return { loadedNodes, loadedEdges, nodeCounter: flowData.node_counter || 1 };
+  return { loadedNodes, nodeCounter: flowData.node_counter || 1 };
 };

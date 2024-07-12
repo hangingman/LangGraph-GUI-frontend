@@ -100,9 +100,8 @@ function Flow() {
   };
 
   const handleLoad = async () => {
-    const { loadedNodes, loadedEdges, nodeCounter } = await loadFlow();
+    const { loadedNodes, nodeCounter } = await loadFlow(setEdges);
     setNodes(loadedNodes);
-    setEdges(loadedEdges);
     setNodeIdCounter(nodeCounter);
   };
 

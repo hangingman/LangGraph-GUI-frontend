@@ -1,3 +1,5 @@
+// NodeData.js
+
 class NodeData {
     constructor({
       uniq_id,
