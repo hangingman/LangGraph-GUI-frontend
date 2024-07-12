@@ -97,12 +97,24 @@ function Flow() {
   };
 
   const onConnect = useCallback((params) => {
-    if (params.sourceHandle === 'true' || params.sourceHandle === 'false') {
+    const sourceNode = nodes.find(node => node.id === params.source);
+  
+    if (params.sourceHandle === 'true') {
+      if (sourceNode.data.true_next !== null) {
+        alert('True port already has a connection.');
+        return;
+      }
+      createConditionEdge(edges, setEdges, params, nodes, setNodes);
+    } else if (params.sourceHandle === 'false') {
+      if (sourceNode.data.false_next !== null) {
+        alert('False port already has a connection.');
+        return;
+      }
       createConditionEdge(edges, setEdges, params, nodes, setNodes);
     } else {
       createEdge(edges, setEdges, params, nodes, setNodes);
     }
-  }, [setEdges, edges, nodes, setNodes]);
+  }, [setEdges, edges, nodes, setNodes]);  
 
   const handleNew = () => {
     setNodes([]);
