@@ -1,7 +1,12 @@
 import React, { useCallback } from 'react';
 import { Handle, Position, NodeResizeControl } from 'reactflow';
 
-const handleStyle = { top: 10 };
+const handleStyle = {
+  width: 6,
+  height: 6,
+  borderRadius: '50%',
+  background: '#555',
+};
 
 function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, onChangeType, onResize, onChangeTool }) {
   const handleTypeChange = useCallback((evt) => {
@@ -24,7 +29,7 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
         background: 'white',
         width: data.width || 200,
         height: data.height || 200,
-        overflow: 'hidden',
+        overflow: 'visible', // Ensure overflow is visible
         position: 'relative'
       }}
     >
@@ -40,26 +45,27 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
         type="target"
         position={Position.Left}
         isConnectable={isConnectable}
+        style={{ ...handleStyle, left: '-5px', top: 'calc(50% - 5px)' }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="a"
-        style={handleStyle}
+        style={{ ...handleStyle, right: '-5px', top: 'calc(50% - 5px)' }}
         isConnectable={isConnectable}
       />
       <Handle
         type="source"
         position={Position.Top}
         id="true"
-        style={{ background: 'green' }}
+        style={{ ...handleStyle, top: '-5px', left: 'calc(50% - 5px)', background: 'green' }}
         isConnectable={isConnectable}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="false"
-        style={{ background: 'red' }}
+        style={{ ...handleStyle, bottom: '-5px', left: 'calc(50% - 5px)', background: 'red' }}
         isConnectable={isConnectable}
       />
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
