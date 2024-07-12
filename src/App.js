@@ -1,9 +1,10 @@
 // App.js
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, ReactFlowProvider, useReactFlow, addEdge } from 'reactflow';
+import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, ReactFlowProvider, useReactFlow } from 'reactflow';
 import 'reactflow/dist/style.css';
 import Node, { addNode, deleteNode } from './Node';
+import { createEdge, deleteEdge } from './Edge';
 import { saveFlow, loadFlow } from './FileUtils';
 
 const nodeTypes = { textUpdater: Node };
@@ -46,11 +47,10 @@ function Flow() {
 
   const handleDeleteEdge = useCallback(() => {
     if (contextMenu && contextMenu.edgeId) {
-      console.log('Deleting edge with ID:', contextMenu.edgeId);
-      setEdges((eds) => eds.filter((edge) => edge.id !== contextMenu.edgeId));
+      deleteEdge(edges, setEdges, contextMenu.edgeId);
     }
     setContextMenu(null);
-  }, [contextMenu, setEdges]);
+  }, [contextMenu, setEdges, edges]);
 
   const handleNodeContextMenu = useCallback((event, node) => {
     event.preventDefault();
@@ -75,7 +75,6 @@ function Flow() {
 
   const handleEdgeContextMenu = useCallback((event, edge) => {
     event.preventDefault();
-    console.log('Right-clicked edge ID:', edge.id);
     setContextMenu({
       mouseX: event.clientX,
       mouseY: event.clientY,
@@ -89,7 +88,7 @@ function Flow() {
     setContextMenu(null);
   };
 
-  const onConnect = useCallback((params) => setEdges((eds) => addEdge({ ...params, id: `e${params.source}-${params.target}`, animated: true }, eds)), [setEdges]);
+  const onConnect = useCallback((params) => createEdge(edges, setEdges, params), [setEdges, edges]);
 
   const handleNew = () => {
     setNodes([]);

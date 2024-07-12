@@ -13,6 +13,7 @@ export const saveFlow = async (nodes, edges, nodeIdCounter) => {
 
   const flowData = {
     nodes: nodesData.map(node => node.toDict()),
+    edges: edgesData,
     node_counter: nodeIdCounter,
   };
 
@@ -46,19 +47,21 @@ export const loadFlow = async () => {
   const contents = await file.text();
   const flowData = JSON.parse(contents);
 
-  const loadedNodes = flowData.nodes.map(nodeData => NodeData.fromDict(nodeData).toReactFlowNode());
+  const loadedNodes = (flowData.nodes || []).map(nodeData => NodeData.fromDict(nodeData).toReactFlowNode());
   const loadedEdges = [];
 
-  flowData.nodes.forEach(nodeData => {
+  // Create edges based on nexts attribute of nodes
+  loadedNodes.forEach(node => {
+    const nodeData = NodeData.fromDict(node.data);
     nodeData.nexts.forEach(nextId => {
       loadedEdges.push({
-        id: `e${nodeData.uniq_id}-${nextId}`,
-        source: nodeData.uniq_id.toString(),
-        target: nextId.toString(),
+        id: `e${node.id}-${nextId}`,
+        source: node.id,
+        target: nextId,
         animated: true,
       });
     });
   });
 
-  return { loadedNodes, loadedEdges, nodeCounter: flowData.node_counter };
+  return { loadedNodes, loadedEdges, nodeCounter: flowData.node_counter || 1 };
 };
