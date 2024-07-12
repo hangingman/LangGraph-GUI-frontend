@@ -34,6 +34,10 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
     };
   }, [updateNodeSize]);
 
+  useEffect(() => {
+    updateNodeSize();
+  }, [data.label, data.description, data.type]);
+
   return (
     <div ref={nodeRef} className="text-updater-node">
       <NodeResizer minWidth={100} minHeight={30} />
@@ -103,7 +107,7 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
                 value={data.description}
                 onChange={onChangeDescription}
                 className="nodrag"
-                style={{ width: nodeWidth - 20, height: nodeHeight - 100 }}
+                style={{ width: nodeWidth - 20 }}
               />
             </div>
           )}

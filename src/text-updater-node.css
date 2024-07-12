@@ -1,14 +1,17 @@
 .text-updater-node {
-    height: 70px;
-    border: 1px solid #eee;
-    padding: 5px;
-    border-radius: 5px;
-    background: white;
-  }
-  
-  .text-updater-node label {
-    display: block;
-    color: #777;
-    font-size: 12px;
-  }
-  
+  border: 1px solid #eee;
+  padding: 5px;
+  border-radius: 5px;
+  background: white;
+}
+
+.text-updater-node label {
+  display: block;
+  color: #777;
+  font-size: 12px;
+}
+
+.text-updater-node textarea {
+  width: calc(100% - 10px);
+  resize: none;
+}
