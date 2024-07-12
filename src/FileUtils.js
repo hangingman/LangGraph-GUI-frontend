@@ -2,6 +2,7 @@
 
 import NodeData from './NodeData';
 import { createEdge } from './Edge';
+import { createConditionEdge } from './ConditionEdge';
 
 export const saveFlow = async (nodes, nodeIdCounter) => {
   const nodesData = nodes.map((node) => NodeData.fromReactFlowNode(node));
@@ -55,6 +56,18 @@ export const loadFlow = async (setEdges, setNodes, setNodeIdCounter) => {
         loadedEdges.push(newEdge);
       }
     });
+    if (node.data.true_next) {
+      const newEdge = createConditionEdge(loadedEdges, setEdges, { source: node.id, target: node.data.true_next, sourceHandle: 'true' }, loadedNodes, setNodes);
+      if (newEdge) {
+        loadedEdges.push(newEdge);
+      }
+    }
+    if (node.data.false_next) {
+      const newEdge = createConditionEdge(loadedEdges, setEdges, { source: node.id, target: node.data.false_next, sourceHandle: 'false' }, loadedNodes, setNodes);
+      if (newEdge) {
+        loadedEdges.push(newEdge);
+      }
+    }
   });
 
   setEdges(loadedEdges);

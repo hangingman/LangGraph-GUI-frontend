@@ -37,6 +37,27 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription })
         position={Position.Left}
         isConnectable={isConnectable}
       />
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="a"
+        style={handleStyle}
+        isConnectable={isConnectable}
+      />
+      <Handle
+        type="source"
+        position={Position.Top}
+        id="true"
+        style={{ background: 'green' }}
+        isConnectable={isConnectable}
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="false"
+        style={{ background: 'red' }}
+        isConnectable={isConnectable}
+      />
       <div>
         <label htmlFor="text">Text:</label>
         <input
@@ -57,13 +78,6 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription })
           style={{ width: nodeWidth - 20 }}
         />
       </div>
-      <Handle
-        type="source"
-        position={Position.Right}
-        id="a"
-        style={handleStyle}
-        isConnectable={isConnectable}
-      />
     </div>
   );
 }

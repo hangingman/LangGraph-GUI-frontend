@@ -27,7 +27,7 @@ export const addNode = (nodes, setNodes, nodeIdCounter, setNodeIdCounter, newPos
   const newNode = {
     id: nodeIdCounter.toString(),
     type: 'textUpdater',
-    data: { label: `Node ${nodeIdCounter}`, description: '', nexts: [] },
+    data: { label: `Node ${nodeIdCounter}`, description: '', nexts: [], true_next: null, false_next: null },
     position: newPosition,
     prevs: []
   };
@@ -53,6 +53,12 @@ export const deleteNode = (nodes, setNodes, edges, setEdges, nodeId) => {
       }
       if (node.prevs.includes(nodeId)) {
         return { ...node, prevs: node.prevs.filter((id) => id !== nodeId) };
+      }
+      if (node.data.true_next === nodeId) {
+        return { ...node, data: { ...node.data, true_next: null } };
+      }
+      if (node.data.false_next === nodeId) {
+        return { ...node, data: { ...node.data, false_next: null } };
       }
       return node;
     })

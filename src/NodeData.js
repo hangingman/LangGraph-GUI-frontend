@@ -1,4 +1,4 @@
-// NodeData
+// NodeData.js
 
 class NodeData {
   constructor({

@@ -5,6 +5,7 @@ import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState,
 import 'reactflow/dist/style.css';
 import Node, { addNode, deleteNode } from './Node';
 import { createEdge, deleteEdge } from './Edge';
+import { createConditionEdge, deleteConditionEdge } from './ConditionEdge';
 import { saveFlow, loadFlow } from './FileUtils';
 
 const nodeTypes = { textUpdater: Node };
@@ -47,7 +48,14 @@ function Flow() {
 
   const handleDeleteEdge = useCallback(() => {
     if (contextMenu && contextMenu.edgeId) {
-      deleteEdge(edges, setEdges, contextMenu.edgeId, nodes, setNodes);
+      const edge = edges.find((e) => e.id === contextMenu.edgeId);
+      if (edge) {
+        if (edge.sourceHandle === 'true' || edge.sourceHandle === 'false') {
+          deleteConditionEdge(edges, setEdges, contextMenu.edgeId, nodes, setNodes);
+        } else {
+          deleteEdge(edges, setEdges, contextMenu.edgeId, nodes, setNodes);
+        }
+      }
     }
     setContextMenu(null);
   }, [contextMenu, setEdges, edges, nodes, setNodes]);
@@ -88,7 +96,13 @@ function Flow() {
     setContextMenu(null);
   };
 
-  const onConnect = useCallback((params) => createEdge(edges, setEdges, params, nodes, setNodes), [setEdges, edges, nodes, setNodes]);
+  const onConnect = useCallback((params) => {
+    if (params.sourceHandle === 'true' || params.sourceHandle === 'false') {
+      createConditionEdge(edges, setEdges, params, nodes, setNodes);
+    } else {
+      createEdge(edges, setEdges, params, nodes, setNodes);
+    }
+  }, [setEdges, edges, nodes, setNodes]);
 
   const handleNew = () => {
     setNodes([]);
@@ -103,7 +117,6 @@ function Flow() {
   const handleLoad = async () => {
     await loadFlow(setEdges, setNodes, setNodeIdCounter);
   };
-  
 
   const handleRun = () => {
     alert('No Imp this button');
