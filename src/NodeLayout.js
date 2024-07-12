@@ -63,7 +63,7 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
             value={data.type}
             onChange={handleTypeChange}
             className="nodrag"
-            style={{ width: '100%' }}
+            style={{ width: 'calc(100% - 20px)' }}
           >
             <option value="START">START</option>
             <option value="STEP">STEP</option>
@@ -82,20 +82,7 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
                   value={data.label}
                   onChange={onChangeLabel}
                   className="nodrag"
-                  style={{ width: '100%' }}
-                />
-              </div>
-            )}
-            {['STEP', 'TOOL', 'CONDITION'].includes(data.type) && (
-              <div style={{ flex: 1 }}>
-                <label htmlFor="description" style={{ display: 'block', fontSize: '12px' }}>Description:</label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={data.description}
-                  onChange={onChangeDescription}
-                  className="nodrag"
-                  style={{ width: '100%', height: 'calc(100% - 20px)', resize: 'none' }}
+                  style={{ width: 'calc(100% - 20px)' }}
                 />
               </div>
             )}
@@ -108,7 +95,20 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
                   value={data.tool}
                   onChange={(evt) => onChangeTool(evt.target.value)}
                   className="nodrag"
-                  style={{ width: '100%' }}
+                  style={{ width: 'calc(100% - 20px)' }}
+                />
+              </div>
+            )}
+            {['STEP', 'TOOL', 'CONDITION'].includes(data.type) && (
+              <div style={{ flex: 1 }}>
+                <label htmlFor="description" style={{ display: 'block', fontSize: '12px' }}>Description:</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={data.description}
+                  onChange={onChangeDescription}
+                  className="nodrag"
+                  style={{ width: 'calc(100% - 20px)', height: 'calc(100% - 30px)', resize: 'none' }}
                 />
               </div>
             )}
