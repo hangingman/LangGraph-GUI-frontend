@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { Handle, Position, NodeResizer } from 'reactflow';
-import './text-updater-node.css';
+import './NodeLayout.css';
 
 const handleStyle = { top: 10 };
 
