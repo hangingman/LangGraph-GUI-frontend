@@ -11,7 +11,7 @@ const handleStyle = {
   background: '#555',
 };
 
-function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, onChangeType, onResize, onChangeTool }) {
+function NodeLayout({ data, isConnectable, onChangeName, onChangeDescription, onChangeType, onResize, onChangeTool }) {
   const handleTypeChange = useCallback((evt) => {
     const newType = evt.target.value;
     onChangeType(evt);
@@ -96,8 +96,8 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
                 <input
                   id="text"
                   name="text"
-                  value={data.label}
-                  onChange={onChangeLabel}
+                  value={data.name}
+                  onChange={onChangeName}
                   className="nodrag"
                   style={{ width: 'calc(100% - 20px)' }}
                 />

@@ -38,7 +38,7 @@ class NodeData {
       height: node.height || node.data.height || 200,
       nexts: node.data.nexts || [],
       type: node.data.type || 'STEP',
-      name: node.data.label,
+      name: node.data.name,
       description: node.data.description || '',
       tool: node.data.tool || '',
       true_next: node.data.true_next || null,
@@ -55,7 +55,7 @@ class NodeData {
       id: this.uniq_id,
       type: 'textUpdater',
       data: {
-        label: this.name,
+        name: this.name,
         description: this.description,
         nexts: this.nexts,
         type: this.type,

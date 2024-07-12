@@ -10,8 +10,8 @@ function Node({ data, isConnectable, id, prevs }) {
     setNodeData(data);
   }, [data]);
 
-  const onChangeLabel = useCallback((evt) => {
-    setNodeData((prevData) => ({ ...prevData, label: evt.target.value }));
+  const onChangeName = useCallback((evt) => {
+    setNodeData((prevData) => ({ ...prevData, name: evt.target.value }));
   }, []);
 
   const onChangeDescription = useCallback((evt) => {
@@ -34,7 +34,7 @@ function Node({ data, isConnectable, id, prevs }) {
     <NodeLayout
       data={nodeData}
       isConnectable={isConnectable}
-      onChangeLabel={onChangeLabel}
+      onChangeName={onChangeName}
       onChangeDescription={onChangeDescription}
       onChangeType={onChangeType}
       onChangeTool={onChangeTool}
@@ -48,7 +48,7 @@ export const addNode = (nodes, setNodes, nodeIdCounter, setNodeIdCounter, newPos
   const newNode = {
     id: nodeIdCounter.toString(),
     type: 'textUpdater',
-    data: { label: `Node ${nodeIdCounter}`, description: '', type: 'STEP', nexts: [], true_next: null, false_next: null, width: 200, height: 200 },
+    data: { name: `Node ${nodeIdCounter}`, description: '', type: 'STEP', nexts: [], true_next: null, false_next: null, width: 200, height: 200 },
     position: newPosition,
     prevs: []
   };
