@@ -1,16 +1,39 @@
-import { useCallback } from 'react';
-import { Handle, Position } from 'reactflow';
+import { memo, useCallback, useRef, useEffect, useState } from 'react';
+import { Handle, Position, NodeResizer } from 'reactflow';
 
 const handleStyle = { left: 10 };
 
 function TextUpdaterNode({ data, isConnectable }) {
+  const nodeRef = useRef(null);
+  const [nodeWidth, setNodeWidth] = useState(100);
+
   const onChange = useCallback((evt) => {
     console.log(evt.target.value);
     data.label = evt.target.value;
   }, [data]);
 
+  useEffect(() => {
+    const updateNodeWidth = () => {
+      if (nodeRef.current) {
+        setNodeWidth(nodeRef.current.offsetWidth);
+      }
+    };
+
+    const observer = new ResizeObserver(updateNodeWidth);
+    if (nodeRef.current) {
+      observer.observe(nodeRef.current);
+    }
+
+    return () => {
+      if (nodeRef.current) {
+        observer.unobserve(nodeRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <div className="text-updater-node">
+    <div ref={nodeRef} className="text-updater-node">
+      <NodeResizer minWidth={100} minHeight={30} />
       <Handle
         type="target"
         position={Position.Top}
@@ -18,7 +41,13 @@ function TextUpdaterNode({ data, isConnectable }) {
       />
       <div>
         <label htmlFor="text">Text:</label>
-        <input id="text" name="text" onChange={onChange} className="nodrag" />
+        <input
+          id="text"
+          name="text"
+          onChange={onChange}
+          className="nodrag"
+          style={{ width: nodeWidth - 20 }} // Adjust the width minus padding/margins if necessary
+        />
       </div>
       <Handle
         type="source"
@@ -37,4 +66,4 @@ function TextUpdaterNode({ data, isConnectable }) {
   );
 }
 
-export default TextUpdaterNode;
+export default memo(TextUpdaterNode);
