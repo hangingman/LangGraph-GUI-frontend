@@ -1,6 +1,5 @@
-// src/App.js
 import React, { useState, useCallback } from 'react';
-import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge } from 'reactflow';
+import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 const initialNodes = [
@@ -20,7 +19,6 @@ function App() {
   const [contextMenu, setContextMenu] = useState(null);
 
   const handleAddNode = useCallback((event) => {
-    event.preventDefault();
     const newNode = {
       id: (nodes.length + 1).toString(),
       data: { label: `Node ${nodes.length + 1}` },
@@ -33,25 +31,47 @@ function App() {
     setContextMenu(null);
   }, [contextMenu, nodes, setNodes]);
 
-  const handleCanvasClick = (event) => {
+  const handleDeleteNode = useCallback(() => {
+    if (contextMenu && contextMenu.nodeId) {
+      setNodes((nds) => nds.filter((node) => node.id !== contextMenu.nodeId));
+      setEdges((eds) => eds.filter((edge) => edge.source !== contextMenu.nodeId && edge.target !== contextMenu.nodeId));
+    }
+    setContextMenu(null);
+  }, [contextMenu, setNodes, setEdges]);
+
+  const handleNodeContextMenu = useCallback((event, node) => {
     event.preventDefault();
     setContextMenu({
       mouseX: event.clientX,
       mouseY: event.clientY,
+      nodeId: node.id,
+      isNode: true,
     });
-  };
+  }, []);
+
+  const handlePaneContextMenu = useCallback((event) => {
+    event.preventDefault();
+    setContextMenu({
+      mouseX: event.clientX,
+      mouseY: event.clientY,
+      isNode: false,
+    });
+  }, []);
 
   const handleCloseContextMenu = () => {
     setContextMenu(null);
   };
 
   return (
-    <div style={{ height: '100vh', width: '100%' }} onContextMenu={handleCanvasClick}>
+    <div style={{ height: '100vh', width: '100%' }}>
       <ReactFlow 
         nodes={nodes} 
         edges={edges} 
         onNodesChange={onNodesChange} 
         onEdgesChange={onEdgesChange}
+        onNodeContextMenu={handleNodeContextMenu}
+        onPaneContextMenu={handlePaneContextMenu}
+        onClick={handleCloseContextMenu}
       >
         <MiniMap />
         <Controls />
@@ -69,7 +89,11 @@ function App() {
             padding: '10px',
           }}
         >
-          <button onClick={handleAddNode}>Add Node</button>
+          {contextMenu.isNode ? (
+            <button onClick={handleDeleteNode}>Delete Node</button>
+          ) : (
+            <button onClick={handleAddNode}>Add Node</button>
+          )}
           <button onClick={handleCloseContextMenu}>Cancel</button>
         </div>
       )}
