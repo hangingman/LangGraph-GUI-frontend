@@ -1,7 +1,5 @@
 // Node.js
 
-// Node.js
-
 import { memo, useCallback } from 'react';
 import NodeLayout from './NodeLayout';
 

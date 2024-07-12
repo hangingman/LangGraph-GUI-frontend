@@ -1,6 +1,6 @@
 // NodeLayout.js
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { Handle, Position, NodeResizer } from 'reactflow';
 import './text-updater-node.css';
 
@@ -11,15 +11,17 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
   const [nodeWidth, setNodeWidth] = useState(data.width || 100);
   const [nodeHeight, setNodeHeight] = useState(data.height || 30);
 
-  useEffect(() => {
-    const updateNodeSize = () => {
-      if (nodeRef.current) {
-        setNodeWidth(nodeRef.current.offsetWidth);
-        setNodeHeight(nodeRef.current.offsetHeight);
-        onResize(nodeRef.current.offsetWidth, nodeRef.current.offsetHeight);
-      }
-    };
+  const updateNodeSize = useCallback(() => {
+    if (nodeRef.current) {
+      const newWidth = nodeRef.current.offsetWidth;
+      const newHeight = nodeRef.current.offsetHeight;
+      setNodeWidth(newWidth);
+      setNodeHeight(newHeight);
+      onResize(newWidth, newHeight);
+    }
+  }, [onResize]);
 
+  useEffect(() => {
     const observer = new ResizeObserver(updateNodeSize);
     if (nodeRef.current) {
       observer.observe(nodeRef.current);
@@ -30,7 +32,7 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
         observer.unobserve(nodeRef.current);
       }
     };
-  }, [onResize]);
+  }, [updateNodeSize]);
 
   return (
     <div ref={nodeRef} className="text-updater-node">
