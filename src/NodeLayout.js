@@ -1,3 +1,5 @@
+// NodeLayout.js
+
 import React, { useCallback } from 'react';
 import { Handle, Position, NodeResizeControl } from 'reactflow';
 import ResizeIcon from './ResizeIcon';
