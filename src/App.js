@@ -18,10 +18,10 @@ function Flow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [contextMenu, setContextMenu] = useState(null);
   const [nodeIdCounter, setNodeIdCounter] = useState(nodes.length + 1); // Counter for node IDs
-  const { project } = useReactFlow();
+  const { screenToFlowPosition } = useReactFlow();
 
   const handleAddNode = useCallback((event) => {
-    const newPosition = project({ x: contextMenu.mouseX, y: contextMenu.mouseY });
+    const newPosition = screenToFlowPosition({ x: contextMenu.mouseX, y: contextMenu.mouseY });
     const newNode = {
       id: nodeIdCounter.toString(), // Use the counter for the new node ID
       data: { label: `Node ${nodeIdCounter}` },
@@ -30,7 +30,7 @@ function Flow() {
     setNodes((nds) => nds.concat(newNode));
     setNodeIdCounter(nodeIdCounter + 1); // Increment the counter
     setContextMenu(null);
-  }, [contextMenu, nodeIdCounter, setNodes, project]);
+  }, [contextMenu, nodeIdCounter, setNodes, screenToFlowPosition]);
 
   const handleDeleteNode = useCallback(() => {
     if (contextMenu && contextMenu.nodeId) {
