@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Handle, Position, NodeResizer } from 'reactflow';
+import { Handle, Position, NodeResizeControl } from 'reactflow';
 
 const handleStyle = { top: 10 };
 
@@ -24,10 +24,18 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
         background: 'white',
         width: data.width || 200,
         height: data.height || 200,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        position: 'relative'
       }}
     >
-      <NodeResizer minWidth={200} minHeight={200} onResize={handleResize} />
+      <NodeResizeControl 
+        style={{ position: 'absolute', right: 5, bottom: 5 }} 
+        minWidth={200} 
+        minHeight={200} 
+        onResize={handleResize}
+      >
+        <ResizeIcon />
+      </NodeResizeControl>
       <Handle
         type="target"
         position={Position.Left}
@@ -116,6 +124,29 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
         )}
       </div>
     </div>
+  );
+}
+
+function ResizeIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      strokeWidth="2"
+      stroke="#ff0071"
+      fill="none"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ position: 'absolute', right: 0, bottom: 0 }}
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <polyline points="16 20 20 20 20 16" />
+      <line x1="14" y1="14" x2="20" y2="20" />
+      <polyline points="8 4 4 4 4 8" />
+      <line x1="4" y1="4" x2="10" y2="10" />
+    </svg>
   );
 }
 
