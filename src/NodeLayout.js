@@ -2,7 +2,6 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { Handle, Position, NodeResizer } from 'reactflow';
-import './NodeLayout.css';
 
 const handleStyle = { top: 10 };
 
@@ -39,7 +38,7 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
   }, [data.label, data.description, data.type]);
 
   return (
-    <div ref={nodeRef} className="text-updater-node">
+    <div ref={nodeRef} style={{ border: '1px solid #eee', padding: '5px', borderRadius: '5px', background: 'white' }}>
       <NodeResizer minWidth={100} minHeight={30} />
       <Handle
         type="target"
@@ -68,7 +67,7 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
         isConnectable={isConnectable}
       />
       <div>
-        <label htmlFor="type">Type:</label>
+        <label htmlFor="type" style={{ display: 'block', fontSize: '12px' }}>Type:</label>
         <select
           id="type"
           name="type"
@@ -87,7 +86,7 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
         <>
           {['STEP', 'CONDITION'].includes(data.type) && (
             <div>
-              <label htmlFor="text">Name:</label>
+              <label htmlFor="text" style={{ display: 'block', fontSize: '12px' }}>Name:</label>
               <input
                 id="text"
                 name="text"
@@ -100,20 +99,20 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
           )}
           {['STEP', 'TOOL', 'CONDITION'].includes(data.type) && (
             <div>
-              <label htmlFor="description">Description:</label>
+              <label htmlFor="description" style={{ display: 'block', fontSize: '12px' }}>Description:</label>
               <textarea
                 id="description"
                 name="description"
                 value={data.description}
                 onChange={onChangeDescription}
                 className="nodrag"
-                style={{ width: nodeWidth - 20 }}
+                style={{ width: nodeWidth - 20, resize: 'none' }}
               />
             </div>
           )}
           {data.type === 'STEP' && (
             <div>
-              <label htmlFor="tool">Tool:</label>
+              <label htmlFor="tool" style={{ display: 'block', fontSize: '12px' }}>Tool:</label>
               <input
                 id="tool"
                 name="tool"
