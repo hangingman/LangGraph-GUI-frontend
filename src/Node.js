@@ -36,8 +36,27 @@ export const addNode = (nodes, setNodes, nodeIdCounter, setNodeIdCounter, newPos
 };
 
 export const deleteNode = (nodes, setNodes, edges, setEdges, nodeId) => {
+  const nodeToDelete = nodes.find((node) => node.id === nodeId);
+  if (!nodeToDelete) return;
+
+  // Remove the node itself
   setNodes((nds) => nds.filter((node) => node.id !== nodeId));
+
+  // Remove edges connected to this node
   setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
+
+  // Remove references from other nodes
+  setNodes((nds) =>
+    nds.map((node) => {
+      if (node.data.nexts.includes(nodeId)) {
+        return { ...node, data: { ...node.data, nexts: node.data.nexts.filter((id) => id !== nodeId) } };
+      }
+      if (node.prevs.includes(nodeId)) {
+        return { ...node, prevs: node.prevs.filter((id) => id !== nodeId) };
+      }
+      return node;
+    })
+  );
 };
 
 export default memo(Node);

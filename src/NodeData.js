@@ -2,14 +2,14 @@
 
 class NodeData {
   constructor({
-    uniq_id,
-    pos_x,
-    pos_y,
+    uniq_id  = '',
+    pos_x = 0,
+    pos_y = 0,
     width = 200,
     height = 200,
     nexts = [],
     type = 'STEP',
-    name,
+    name = '',
     description = '',
     tool = '',
     true_next = null,
