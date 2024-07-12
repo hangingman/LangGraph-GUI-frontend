@@ -63,6 +63,8 @@ function Flow() {
     setContextMenu(null);
   };
 
+  const onConnect = useCallback((params) => setEdges((eds) => [...eds, { ...params, animated: true }]), [setEdges]);
+
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       <ReactFlow 
@@ -73,6 +75,9 @@ function Flow() {
         onNodeContextMenu={handleNodeContextMenu}
         onPaneContextMenu={handlePaneContextMenu}
         onClick={handleCloseContextMenu}
+        onConnect={onConnect} // Add this line
+        connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }} // Optional: styling the connection line
+        connectOnClick={false} // Disable click to connect
       >
         <MiniMap />
         <Controls />
