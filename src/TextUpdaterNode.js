@@ -1,7 +1,7 @@
 import { memo, useCallback, useRef, useEffect, useState } from 'react';
 import { Handle, Position, NodeResizer } from 'reactflow';
 
-const handleStyle = { left: 10 };
+const handleStyle = { top: 10 };
 
 function TextUpdaterNode({ data, isConnectable }) {
   const nodeRef = useRef(null);
@@ -36,7 +36,7 @@ function TextUpdaterNode({ data, isConnectable }) {
       <NodeResizer minWidth={100} minHeight={30} />
       <Handle
         type="target"
-        position={Position.Top}
+        position={Position.Left}
         isConnectable={isConnectable}
       />
       <div>
@@ -51,15 +51,9 @@ function TextUpdaterNode({ data, isConnectable }) {
       </div>
       <Handle
         type="source"
-        position={Position.Bottom}
+        position={Position.Right}
         id="a"
         style={handleStyle}
-        isConnectable={isConnectable}
-      />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        id="b"
         isConnectable={isConnectable}
       />
     </div>

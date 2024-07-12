@@ -5,9 +5,9 @@ import TextUpdaterNode from './TextUpdaterNode';
 import './text-updater-node.css';
 
 const initialNodes = [
-  { id: '1', type: 'textUpdater', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
-  { id: '2', type: 'textUpdater', data: { label: 'Node 2' }, position: { x: 100, y: 200 } },
-  { id: '3', type: 'textUpdater', data: { label: 'Node 3' }, position: { x: 400, y: 200 } },
+  { id: '1', type: 'textUpdater', data: { label: 'Node 1' }, position: { x: 50, y: 150 } },
+  { id: '2', type: 'textUpdater', data: { label: 'Node 2' }, position: { x: 300, y: 100 } },
+  { id: '3', type: 'textUpdater', data: { label: 'Node 3' }, position: { x: 300, y: 400 } },
 ];
 
 const initialEdges = [
