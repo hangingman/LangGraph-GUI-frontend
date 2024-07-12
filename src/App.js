@@ -1,6 +1,6 @@
 // App.js
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, ReactFlowProvider, useReactFlow, addEdge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import Node from './Node';
@@ -25,6 +25,22 @@ function Flow() {
   const [contextMenu, setContextMenu] = useState(null);
   const [nodeIdCounter, setNodeIdCounter] = useState(nodes.length + 1);
   const { screenToFlowPosition } = useReactFlow();
+  const menuBarRef = useRef(null);
+  const [canvasHeight, setCanvasHeight] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (menuBarRef.current) {
+        const menuBarHeight = menuBarRef.current.offsetHeight;
+        setCanvasHeight(window.innerHeight - menuBarHeight - 10);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // call once to set initial height
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleAddNode = useCallback((event) => {
     const newPosition = screenToFlowPosition({ x: contextMenu.mouseX, y: contextMenu.mouseY });
@@ -116,30 +132,32 @@ function Flow() {
 
   return (
     <div style={{ height: '100vh', width: '100%' }}>
-      <nav style={{ padding: '10px', borderBottom: '1px solid #ccc', marginBottom: '10px' }}>
+      <nav ref={menuBarRef} style={{ padding: '10px', borderBottom: '1px solid #ccc', marginBottom: '10px' }}>
         <button onClick={handleNew}>New</button>
         <button onClick={handleSave}>Save</button>
         <button onClick={handleLoad}>Load</button>
         <button onClick={handleRun}>Run</button>
       </nav>
-      <ReactFlow 
-        nodes={nodes} 
-        edges={edges} 
-        onNodesChange={onNodesChange} 
-        onEdgesChange={onEdgesChange}
-        onNodeContextMenu={handleNodeContextMenu}
-        onPaneContextMenu={handlePaneContextMenu}
-        onEdgeContextMenu={handleEdgeContextMenu}
-        onClick={handleCloseContextMenu}
-        onConnect={onConnect}
-        connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
-        connectOnClick={false}
-        nodeTypes={nodeTypes}
-      >
-        <MiniMap />
-        <Controls />
-        <Background />
-      </ReactFlow>
+      <div style={{ height: `${canvasHeight}px`, width: '100%' }}>
+        <ReactFlow 
+          nodes={nodes} 
+          edges={edges} 
+          onNodesChange={onNodesChange} 
+          onEdgesChange={onEdgesChange}
+          onNodeContextMenu={handleNodeContextMenu}
+          onPaneContextMenu={handlePaneContextMenu}
+          onEdgeContextMenu={handleEdgeContextMenu}
+          onClick={handleCloseContextMenu}
+          onConnect={onConnect}
+          connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
+          connectOnClick={false}
+          nodeTypes={nodeTypes}
+        >
+          <MiniMap />
+          <Controls />
+          <Background />
+        </ReactFlow>
+      </div>
       {contextMenu && (
         <div
           style={{
