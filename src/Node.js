@@ -1,5 +1,7 @@
 // Node.js
 
+// Node.js
+
 import { memo, useCallback } from 'react';
 import NodeLayout from './NodeLayout';
 
@@ -12,12 +14,28 @@ function Node({ data, isConnectable, id, prevs }) {
     data.description = evt.target.value;
   }, [data]);
 
+  const onChangeType = useCallback((evt) => {
+    data.type = evt.target.value;
+  }, [data]);
+
+  const onChangeTool = useCallback((tool) => {
+    data.tool = tool;
+  }, [data]);
+
+  const onResize = useCallback((width, height) => {
+    data.width = width;
+    data.height = height;
+  }, [data]);
+
   return (
     <NodeLayout
       data={data}
       isConnectable={isConnectable}
       onChangeLabel={onChangeLabel}
       onChangeDescription={onChangeDescription}
+      onChangeType={onChangeType}
+      onChangeTool={onChangeTool}
+      onResize={onResize}
       prevs={prevs}
     />
   );
@@ -27,7 +45,7 @@ export const addNode = (nodes, setNodes, nodeIdCounter, setNodeIdCounter, newPos
   const newNode = {
     id: nodeIdCounter.toString(),
     type: 'textUpdater',
-    data: { label: `Node ${nodeIdCounter}`, description: '', nexts: [], true_next: null, false_next: null },
+    data: { label: `Node ${nodeIdCounter}`, description: '', type: 'STEP', nexts: [], true_next: null, false_next: null, width: 200, height: 200 },
     position: newPosition,
     prevs: []
   };
