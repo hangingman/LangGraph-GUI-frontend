@@ -23,9 +23,9 @@ function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription, o
   return (
     <div 
       style={{ 
-        border: '1px solid #eee', 
+        border: '1px solid #898989', // Darker boundary color
         padding: '5px', 
-        borderRadius: '5px', 
+        borderRadius: '15px', // More rounded corners
         background: 'white',
         width: data.width || 200,
         height: data.height || 200,
