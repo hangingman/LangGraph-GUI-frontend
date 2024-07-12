@@ -1,19 +1,14 @@
-import { memo, useCallback, useRef, useEffect, useState } from 'react';
+// NodeLayout.js
+
+import { useRef, useEffect, useState } from 'react';
 import { Handle, Position, NodeResizer } from 'reactflow';
+import './text-updater-node.css';
 
 const handleStyle = { top: 10 };
 
-function TextUpdaterNode({ data, isConnectable }) {
+function NodeLayout({ data, isConnectable, onChangeLabel, onChangeDescription }) {
   const nodeRef = useRef(null);
   const [nodeWidth, setNodeWidth] = useState(100);
-
-  const onChangeLabel = useCallback((evt) => {
-    data.label = evt.target.value;
-  }, [data]);
-
-  const onChangeDescription = useCallback((evt) => {
-    data.description = evt.target.value;
-  }, [data]);
 
   useEffect(() => {
     const updateNodeWidth = () => {
@@ -73,4 +68,4 @@ function TextUpdaterNode({ data, isConnectable }) {
   );
 }
 
-export default memo(TextUpdaterNode);
+export default NodeLayout;

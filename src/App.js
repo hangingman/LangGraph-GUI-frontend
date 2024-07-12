@@ -1,9 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, ReactFlowProvider, useReactFlow, addEdge } from 'reactflow';
 import 'reactflow/dist/style.css';
-import TextUpdaterNode from './TextUpdaterNode';
+import Node from './Node';
 import NodeData from './NodeData';
-import './text-updater-node.css';
 
 const initialNodes = [
   { id: '1', type: 'textUpdater', data: { label: 'Node 1', description: '' }, position: { x: 50, y: 150 } },
@@ -16,7 +15,7 @@ const initialEdges = [
   { id: 'e1-3', source: '1', target: '3', animated: true },
 ];
 
-const nodeTypes = { textUpdater: TextUpdaterNode };
+const nodeTypes = { textUpdater: Node };
 
 function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
