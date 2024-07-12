@@ -17,19 +17,21 @@ function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [contextMenu, setContextMenu] = useState(null);
+  const [nodeIdCounter, setNodeIdCounter] = useState(nodes.length + 1); // Counter for node IDs
 
   const handleAddNode = useCallback((event) => {
     const newNode = {
-      id: (nodes.length + 1).toString(),
-      data: { label: `Node ${nodes.length + 1}` },
+      id: nodeIdCounter.toString(), // Use the counter for the new node ID
+      data: { label: `Node ${nodeIdCounter}` },
       position: {
         x: contextMenu.mouseX - event.target.getBoundingClientRect().left,
         y: contextMenu.mouseY - event.target.getBoundingClientRect().top,
       },
     };
     setNodes((nds) => nds.concat(newNode));
+    setNodeIdCounter(nodeIdCounter + 1); // Increment the counter
     setContextMenu(null);
-  }, [contextMenu, nodes, setNodes]);
+  }, [contextMenu, nodeIdCounter, setNodes]);
 
   const handleDeleteNode = useCallback(() => {
     if (contextMenu && contextMenu.nodeId) {
