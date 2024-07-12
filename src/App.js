@@ -40,6 +40,14 @@ function Flow() {
     setContextMenu(null);
   }, [contextMenu, setNodes, setEdges]);
 
+  const handleDeleteEdge = useCallback(() => {
+    if (contextMenu && contextMenu.edgeId) {
+      console.log('Deleting edge with ID:', contextMenu.edgeId);
+      setEdges((eds) => eds.filter((edge) => edge.id !== contextMenu.edgeId));
+    }
+    setContextMenu(null);
+  }, [contextMenu, setEdges]);
+
   const handleNodeContextMenu = useCallback((event, node) => {
     event.preventDefault();
     setContextMenu({
@@ -47,6 +55,7 @@ function Flow() {
       mouseY: event.clientY,
       nodeId: node.id,
       isNode: true,
+      isEdge: false,
     });
   }, []);
 
@@ -56,6 +65,19 @@ function Flow() {
       mouseX: event.clientX,
       mouseY: event.clientY,
       isNode: false,
+      isEdge: false,
+    });
+  }, []);
+
+  const handleEdgeContextMenu = useCallback((event, edge) => {
+    event.preventDefault();
+    console.log('Right-clicked edge ID:', edge.id);
+    setContextMenu({
+      mouseX: event.clientX,
+      mouseY: event.clientY,
+      edgeId: edge.id,
+      isNode: false,
+      isEdge: true,
     });
   }, []);
 
@@ -63,7 +85,7 @@ function Flow() {
     setContextMenu(null);
   };
 
-  const onConnect = useCallback((params) => setEdges((eds) => [...eds, { ...params, animated: true }]), [setEdges]);
+  const onConnect = useCallback((params) => setEdges((eds) => [...eds, { ...params, id: `e${params.source}-${params.target}`, animated: true }]), [setEdges]);
 
   return (
     <div style={{ height: '100vh', width: '100%' }}>
@@ -74,10 +96,11 @@ function Flow() {
         onEdgesChange={onEdgesChange}
         onNodeContextMenu={handleNodeContextMenu}
         onPaneContextMenu={handlePaneContextMenu}
+        onEdgeContextMenu={handleEdgeContextMenu}
         onClick={handleCloseContextMenu}
-        onConnect={onConnect} // Add this line
-        connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }} // Optional: styling the connection line
-        connectOnClick={false} // Disable click to connect
+        onConnect={onConnect}
+        connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
+        connectOnClick={false}
       >
         <MiniMap />
         <Controls />
@@ -97,6 +120,8 @@ function Flow() {
         >
           {contextMenu.isNode ? (
             <button onClick={handleDeleteNode}>Delete Node</button>
+          ) : contextMenu.isEdge ? (
+            <button onClick={handleDeleteEdge}>Delete Edge</button>
           ) : (
             <button onClick={handleAddNode}>Add Node</button>
           )}
