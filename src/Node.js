@@ -1,33 +1,38 @@
 // Node.js
 
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useState, useEffect } from 'react';
 import NodeLayout from './NodeLayout';
 
 function Node({ data, isConnectable, id, prevs }) {
-  const onChangeLabel = useCallback((evt) => {
-    data.label = evt.target.value;
+  const [nodeData, setNodeData] = useState(data);
+
+  useEffect(() => {
+    setNodeData(data);
   }, [data]);
+
+  const onChangeLabel = useCallback((evt) => {
+    setNodeData((prevData) => ({ ...prevData, label: evt.target.value }));
+  }, []);
 
   const onChangeDescription = useCallback((evt) => {
-    data.description = evt.target.value;
-  }, [data]);
+    setNodeData((prevData) => ({ ...prevData, description: evt.target.value }));
+  }, []);
 
   const onChangeType = useCallback((evt) => {
-    data.type = evt.target.value;
-  }, [data]);
+    setNodeData((prevData) => ({ ...prevData, type: evt.target.value }));
+  }, []);
 
   const onChangeTool = useCallback((tool) => {
-    data.tool = tool;
-  }, [data]);
+    setNodeData((prevData) => ({ ...prevData, tool }));
+  }, []);
 
   const onResize = useCallback((width, height) => {
-    data.width = width;
-    data.height = height;
-  }, [data]);
+    setNodeData((prevData) => ({ ...prevData, width, height }));
+  }, []);
 
   return (
     <NodeLayout
-      data={data}
+      data={nodeData}
       isConnectable={isConnectable}
       onChangeLabel={onChangeLabel}
       onChangeDescription={onChangeDescription}
