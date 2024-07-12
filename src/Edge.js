@@ -6,8 +6,8 @@ export const createEdge = (edges, setEdges, params) => {
   setEdges((eds) => addEdge({
     ...params,
     id: `e${params.source}-${params.target}`,
-    animated: true,
-    style: { stroke: '#f6ab6c', strokeWidth: 2 },
+    animated: false, // Set to false for solid stroke
+    style: { stroke: '#000000', strokeWidth: 2 }, // Change stroke color to black
     markerEnd: {
       type: 'arrowclosed',
       width: 20,  // Increase the width of the arrow
