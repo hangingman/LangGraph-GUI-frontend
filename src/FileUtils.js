@@ -46,8 +46,7 @@ export const loadFlow = async (setEdges, setNodes) => {
 
   // Recreate edges based on nexts attribute of nodes
   loadedNodes.forEach((node) => {
-    const nodeData = NodeData.fromDict(node.data);
-    nodeData.nexts.forEach((nextId) => {
+    node.data.nexts.forEach((nextId) => {
       createEdge(loadedEdges, setEdges, { source: node.id, target: nextId }, loadedNodes, setNodes);
     });
   });
@@ -55,5 +54,5 @@ export const loadFlow = async (setEdges, setNodes) => {
   setNodes(loadedNodes);
   setEdges(loadedEdges);
 
-  return { loadedNodes, loadedEdges, nodeCounter: flowData.node_counter || 1 };
+  return { nodeCounter: flowData.node_counter || 1 };
 };

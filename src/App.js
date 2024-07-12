@@ -93,6 +93,7 @@ function Flow() {
   const handleNew = () => {
     setNodes([]);
     setEdges([]);
+    setNodeIdCounter(1);
   };
 
   const handleSave = async () => {
@@ -100,9 +101,7 @@ function Flow() {
   };
 
   const handleLoad = async () => {
-    const { loadedNodes, loadedEdges, nodeCounter } = await loadFlow(setEdges, setNodes);
-    setNodes(loadedNodes);
-    setEdges(loadedEdges);
+    const { nodeCounter } = await loadFlow(setEdges, setNodes);
     setNodeIdCounter(nodeCounter);
   };
 

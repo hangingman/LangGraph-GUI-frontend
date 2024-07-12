@@ -3,7 +3,7 @@
 import { memo, useCallback } from 'react';
 import NodeLayout from './NodeLayout';
 
-function Node({ data, isConnectable }) {
+function Node({ data, isConnectable, id, prevs }) {
   const onChangeLabel = useCallback((evt) => {
     data.label = evt.target.value;
   }, [data]);
@@ -18,6 +18,7 @@ function Node({ data, isConnectable }) {
       isConnectable={isConnectable}
       onChangeLabel={onChangeLabel}
       onChangeDescription={onChangeDescription}
+      prevs={prevs}
     />
   );
 }
@@ -26,8 +27,9 @@ export const addNode = (nodes, setNodes, nodeIdCounter, setNodeIdCounter, newPos
   const newNode = {
     id: nodeIdCounter.toString(),
     type: 'textUpdater',
-    data: { label: `Node ${nodeIdCounter}`, description: '', nexts: [], prev: [] },
+    data: { label: `Node ${nodeIdCounter}`, description: '', nexts: [] },
     position: newPosition,
+    prevs: []
   };
   setNodes((nds) => nds.concat(newNode));
   setNodeIdCounter(nodeIdCounter + 1);
