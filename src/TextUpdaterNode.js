@@ -7,9 +7,12 @@ function TextUpdaterNode({ data, isConnectable }) {
   const nodeRef = useRef(null);
   const [nodeWidth, setNodeWidth] = useState(100);
 
-  const onChange = useCallback((evt) => {
-    console.log(evt.target.value);
+  const onChangeLabel = useCallback((evt) => {
     data.label = evt.target.value;
+  }, [data]);
+
+  const onChangeDescription = useCallback((evt) => {
+    data.description = evt.target.value;
   }, [data]);
 
   useEffect(() => {
@@ -44,9 +47,19 @@ function TextUpdaterNode({ data, isConnectable }) {
         <input
           id="text"
           name="text"
-          onChange={onChange}
+          value={data.label}
+          onChange={onChangeLabel}
           className="nodrag"
-          style={{ width: nodeWidth - 20 }} // Adjust the width minus padding/margins if necessary
+          style={{ width: nodeWidth - 20 }}
+        />
+        <label htmlFor="description">Description:</label>
+        <input
+          id="description"
+          name="description"
+          value={data.description}
+          onChange={onChangeDescription}
+          className="nodrag"
+          style={{ width: nodeWidth - 20 }}
         />
       </div>
       <Handle

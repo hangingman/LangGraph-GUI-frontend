@@ -2,12 +2,13 @@ import React, { useState, useCallback } from 'react';
 import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, ReactFlowProvider, useReactFlow, addEdge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import TextUpdaterNode from './TextUpdaterNode';
+import NodeData from './NodeData';
 import './text-updater-node.css';
 
 const initialNodes = [
-  { id: '1', type: 'textUpdater', data: { label: 'Node 1' }, position: { x: 50, y: 150 } },
-  { id: '2', type: 'textUpdater', data: { label: 'Node 2' }, position: { x: 300, y: 100 } },
-  { id: '3', type: 'textUpdater', data: { label: 'Node 3' }, position: { x: 300, y: 400 } },
+  { id: '1', type: 'textUpdater', data: { label: 'Node 1', description: '' }, position: { x: 50, y: 150 } },
+  { id: '2', type: 'textUpdater', data: { label: 'Node 2', description: '' }, position: { x: 300, y: 100 } },
+  { id: '3', type: 'textUpdater', data: { label: 'Node 3', description: '' }, position: { x: 300, y: 400 } },
 ];
 
 const initialEdges = [
@@ -29,7 +30,7 @@ function Flow() {
     const newNode = {
       id: nodeIdCounter.toString(),
       type: 'textUpdater',
-      data: { label: `Node ${nodeIdCounter}` },
+      data: { label: `Node ${nodeIdCounter}`, description: '' },
       position: newPosition,
     };
     setNodes((nds) => nds.concat(newNode));
@@ -98,10 +99,19 @@ function Flow() {
   };
 
   const handleSave = async () => {
+    const nodesData = nodes.map((node) => NodeData.fromReactFlowNode(node));
+    const edgesData = edges.map((edge) => ({
+      id: edge.id,
+      source: edge.source,
+      target: edge.target,
+      animated: edge.animated,
+    }));
+
     const flowData = {
-      nodes,
-      edges,
+      nodes: nodesData.map(node => node.toDict()),
+      node_counter: nodeIdCounter,
     };
+
     const blob = new Blob([JSON.stringify(flowData, null, 2)], { type: 'application/json' });
     const fileHandle = await window.showSaveFilePicker({
       suggestedName: 'flow.json',
@@ -131,8 +141,24 @@ function Flow() {
     const file = await fileHandle.getFile();
     const contents = await file.text();
     const flowData = JSON.parse(contents);
-    setNodes(flowData.nodes);
-    setEdges(flowData.edges);
+
+    const loadedNodes = flowData.nodes.map(nodeData => NodeData.fromDict(nodeData).toReactFlowNode());
+    const loadedEdges = [];
+
+    flowData.nodes.forEach(nodeData => {
+      nodeData.nexts.forEach(nextId => {
+        loadedEdges.push({
+          id: `e${nodeData.uniq_id}-${nextId}`,
+          source: nodeData.uniq_id.toString(),
+          target: nextId.toString(),
+          animated: true,
+        });
+      });
+    });
+
+    setNodes(loadedNodes);
+    setEdges(loadedEdges);
+    setNodeIdCounter(flowData.node_counter);
   };
 
   const handleRun = () => {
