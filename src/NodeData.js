@@ -1,3 +1,5 @@
+// NodeData
+
 class NodeData {
   constructor({
     uniq_id,
