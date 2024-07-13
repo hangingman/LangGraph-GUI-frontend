@@ -2,12 +2,12 @@
 
 import React from 'react';
 import { ReactFlowProvider } from 'reactflow';
-import Flow from './Flow';
+import Canvas from './Canvas';
 
 function App() {
   return (
     <ReactFlowProvider>
-      <Flow />
+      <Canvas />
     </ReactFlowProvider>
   );
 }

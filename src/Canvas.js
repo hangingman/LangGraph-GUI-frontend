@@ -1,4 +1,4 @@
-// Flow.js
+// Canvas.js
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, useReactFlow } from 'reactflow';
@@ -10,7 +10,7 @@ import { saveFlow, loadFlow } from './FileUtils';
 
 const nodeTypes = { textUpdater: Node };
 
-function Flow() {
+function Canvas() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [contextMenu, setContextMenu] = useState(null);
@@ -188,4 +188,4 @@ function Flow() {
   );
 }
 
-export default Flow;
+export default Canvas;
