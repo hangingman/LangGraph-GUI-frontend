@@ -1,20 +1,27 @@
 // Canvas.js
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, useReactFlow } from 'reactflow';
+import ReactFlow, { MiniMap, Controls, Background, useEdgesState, useReactFlow } from 'reactflow';
 import 'reactflow/dist/style.css';
 import Node, { addNode, deleteNode } from './Node';
 import { createEdge, deleteEdge } from './Edge';
 import { createConditionEdge, deleteConditionEdge } from './ConditionEdge';
 import { saveJson, loadJson } from './FileUtils';
+import { useGraphManager, GraphManagerProvider } from './GraphManagerContext';
 
 const nodeTypes = { textUpdater: Node };
 
 function Canvas() {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const {
+    nodes,
+    setNodes,
+    onNodesChange,
+    nodeIdCounter,
+    setNodeIdCounter,
+  } = useGraphManager();
+  
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [contextMenu, setContextMenu] = useState(null);
-  const [nodeIdCounter, setNodeIdCounter] = useState(1);
   const { screenToFlowPosition } = useReactFlow();
   const menuBarRef = useRef(null);
   const [canvasHeight, setCanvasHeight] = useState(window.innerHeight);
@@ -98,7 +105,7 @@ function Canvas() {
 
   const onConnect = useCallback((params) => {
     const sourceNode = nodes.find(node => node.id === params.source);
-  
+
     if (params.sourceHandle === 'true') {
       if (sourceNode.data.true_next !== null) {
         alert('True port already has a connection.');
@@ -114,7 +121,7 @@ function Canvas() {
     } else {
       createEdge(edges, setEdges, params, nodes, setNodes);
     }
-  }, [setEdges, edges, nodes, setNodes]);  
+  }, [setEdges, edges, nodes, setNodes]);
 
   const handleNew = () => {
     setNodes([]);
@@ -188,4 +195,8 @@ function Canvas() {
   );
 }
 
-export default Canvas;
+export default () => (
+  <GraphManagerProvider>
+    <Canvas />
+  </GraphManagerProvider>
+);
