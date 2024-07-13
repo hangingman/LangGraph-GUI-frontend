@@ -2,6 +2,7 @@
 
 import { memo, useCallback, useState, useEffect } from 'react';
 import NodeLayout from './NodeLayout';
+import { useGraphManager } from './GraphManagerContext';
 
 // Helper functions to remove references
 export const removePrevs = (nodes, nodeId) => {
@@ -62,31 +63,49 @@ export const removeNexts = (nodes, nodeId) => {
 };
 
 function Node({ data, isConnectable, id, prevs }) {
+  const {
+    nodes,
+    setNodes,
+  } = useGraphManager();
   const [nodeData, setNodeData] = useState(data);
 
   useEffect(() => {
     setNodeData(data);
   }, [data]);
 
+  const updateNodeData = (updateFn) => {
+    setNodes((nds) => {
+      return nds.map((node) => {
+        if (node.id === id) {
+          return {
+            ...node,
+            data: updateFn(node.data),
+          };
+        }
+        return node;
+      });
+    });
+  };
+
   const onChangeName = useCallback((evt) => {
-    setNodeData((prevData) => ({ ...prevData, name: evt.target.value }));
-  }, []);
+    updateNodeData((prevData) => ({ ...prevData, name: evt.target.value }));
+  }, [id, setNodes]);
 
   const onChangeDescription = useCallback((evt) => {
-    setNodeData((prevData) => ({ ...prevData, description: evt.target.value }));
-  }, []);
+    updateNodeData((prevData) => ({ ...prevData, description: evt.target.value }));
+  }, [id, setNodes]);
 
   const onChangeType = useCallback((evt) => {
-    setNodeData((prevData) => ({ ...prevData, type: evt.target.value }));
-  }, []);
+    updateNodeData((prevData) => ({ ...prevData, type: evt.target.value }));
+  }, [id, setNodes]);
 
   const onChangeTool = useCallback((tool) => {
-    setNodeData((prevData) => ({ ...prevData, tool }));
-  }, []);
+    updateNodeData((prevData) => ({ ...prevData, tool }));
+  }, [id, setNodes]);
 
   const onResize = useCallback((width, height) => {
-    setNodeData((prevData) => ({ ...prevData, width, height }));
-  }, []);
+    updateNodeData((prevData) => ({ ...prevData, width, height }));
+  }, [id, setNodes]);
 
   return (
     <NodeLayout
