@@ -6,7 +6,7 @@ import 'reactflow/dist/style.css';
 import Node, { addNode, deleteNode } from './Node';
 import { createEdge, deleteEdge } from './Edge';
 import { createConditionEdge, deleteConditionEdge } from './ConditionEdge';
-import { saveFlow, loadFlow } from './FileUtils';
+import { saveJson, loadJson } from './FileUtils';
 
 const nodeTypes = { textUpdater: Node };
 
