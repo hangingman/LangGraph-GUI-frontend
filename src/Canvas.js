@@ -123,11 +123,11 @@ function Canvas() {
   };
 
   const handleSave = async () => {
-    await saveFlow(nodes, nodeIdCounter);
+    await saveJson(nodes, nodeIdCounter);
   };
 
   const handleLoad = async () => {
-    await loadFlow(setEdges, setNodes, setNodeIdCounter);
+    await loadJson(setEdges, setNodes, setNodeIdCounter);
   };
 
   const handleRun = () => {

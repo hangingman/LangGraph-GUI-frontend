@@ -4,7 +4,7 @@ import NodeData from './NodeData';
 import { createEdge } from './Edge';
 import { createConditionEdge } from './ConditionEdge';
 
-export const saveFlow = async (nodes, nodeIdCounter) => {
+export const saveJson = async (nodes, nodeIdCounter) => {
   const nodesData = nodes.map((node) => NodeData.fromReactFlowNode(node));
 
   const flowData = {
@@ -28,7 +28,7 @@ export const saveFlow = async (nodes, nodeIdCounter) => {
   alert('Flow saved!');
 };
 
-export const loadFlow = async (setEdges, setNodes, setNodeIdCounter) => {
+export const loadJson = async (setEdges, setNodes, setNodeIdCounter) => {
   const [fileHandle] = await window.showOpenFilePicker({
     types: [
       {
