@@ -14,7 +14,8 @@ This repo is implemented with ReactFlow. If you want Qt version frontend, see [L
 For environment build up
 
 ```
-npm install reactflow
+cd src
+npm install react react-dom react-scripts reactflow
 ```
 
 In the project directory, you can run:
