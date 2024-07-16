@@ -8,6 +8,7 @@ import { createEdge, deleteEdge } from './Edge';
 import { createConditionEdge, deleteConditionEdge } from './ConditionEdge';
 import { saveJson, loadJson } from './FileUtils';
 import { useGraphManager, GraphManagerProvider } from './GraphManagerContext';
+import Config from './Config'; // Import Config component
 
 const nodeTypes = { textUpdater: Node };
 
@@ -19,12 +20,13 @@ function Canvas() {
     nodeIdCounter,
     setNodeIdCounter,
   } = useGraphManager();
-  
+
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [contextMenu, setContextMenu] = useState(null);
   const { screenToFlowPosition } = useReactFlow();
   const menuBarRef = useRef(null);
   const [canvasHeight, setCanvasHeight] = useState(window.innerHeight);
+  const [showConfig, setShowConfig] = useState(false); // State to show/hide config window
 
   useEffect(() => {
     const handleResize = () => {
@@ -141,6 +143,18 @@ function Canvas() {
     alert('No Imp this button');
   };
 
+  const handleConfig = () => {
+    setShowConfig(true);
+  };
+
+  const handleUpload = () => {
+    alert('Upload button clicked');
+  };
+
+  const handleDownload = () => {
+    alert('Download button clicked');
+  };
+
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       <nav ref={menuBarRef} style={{ padding: '10px', borderBottom: '1px solid #ccc', marginBottom: '10px' }}>
@@ -148,6 +162,9 @@ function Canvas() {
         <button onClick={handleSave}>Save</button>
         <button onClick={handleLoad}>Load</button>
         <button onClick={handleRun}>Run</button>
+        <button onClick={handleConfig}>Config</button>
+        <button onClick={handleUpload}>Upload</button>
+        <button onClick={handleDownload}>Download</button>
       </nav>
       <div style={{ height: `${canvasHeight}px`, width: '100%' }}>
         <ReactFlow 
@@ -191,6 +208,7 @@ function Canvas() {
           <button onClick={handleCloseContextMenu}>Cancel</button>
         </div>
       )}
+      {showConfig && <Config onClose={() => setShowConfig(false)} />} {/* Render Config component */}
     </div>
   );
 }
