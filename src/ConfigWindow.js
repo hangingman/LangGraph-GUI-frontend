@@ -1,12 +1,14 @@
-// Config.js
-import React, { useState } from 'react';
+// ConfigWindow.js
 
-function Config({ onClose }) {
-  const [setting1, setSetting1] = useState('');
-  const [setting2, setSetting2] = useState(false);
+import React, { useState, useEffect } from 'react';
+import ConfigManager from './ConfigManager';
+
+function ConfigWindow({ onClose }) {
+  const [setting1, setSetting1] = useState(ConfigManager.getSettings().setting1);
+  const [setting2, setSetting2] = useState(ConfigManager.getSettings().setting2);
 
   const handleSave = () => {
-    // Save settings logic here
+    ConfigManager.setSettings(setting1, setting2);
     onClose();
   };
 
@@ -62,4 +64,4 @@ const styles = {
   },
 };
 
-export default Config;
+export default ConfigWindow;

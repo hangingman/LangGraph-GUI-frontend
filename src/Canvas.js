@@ -8,7 +8,7 @@ import { createEdge, deleteEdge } from './Edge';
 import { createConditionEdge, deleteConditionEdge } from './ConditionEdge';
 import { saveJson, loadJson } from './FileUtils';
 import { useGraphManager, GraphManagerProvider } from './GraphManagerContext';
-import Config from './Config'; // Import Config component
+import ConfigWindow from './ConfigWindow';
 
 const nodeTypes = { textUpdater: Node };
 
@@ -26,7 +26,7 @@ function Canvas() {
   const { screenToFlowPosition } = useReactFlow();
   const menuBarRef = useRef(null);
   const [canvasHeight, setCanvasHeight] = useState(window.innerHeight);
-  const [showConfig, setShowConfig] = useState(false); // State to show/hide config window
+  const [showConfig, setShowConfig] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -37,7 +37,7 @@ function Canvas() {
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize(); // call once to set initial height
+    handleResize();
 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -208,7 +208,7 @@ function Canvas() {
           <button onClick={handleCloseContextMenu}>Cancel</button>
         </div>
       )}
-      {showConfig && <Config onClose={() => setShowConfig(false)} />} {/* Render Config component */}
+      {showConfig && <ConfigWindow onClose={() => setShowConfig(false)} />}
     </div>
   );
 }
