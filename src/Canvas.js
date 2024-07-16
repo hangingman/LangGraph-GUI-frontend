@@ -9,6 +9,7 @@ import { createConditionEdge, deleteConditionEdge } from './ConditionEdge';
 import { saveJson, loadJson } from './FileUtils';
 import { useGraphManager, GraphManagerProvider } from './GraphManagerContext';
 import ConfigWindow from './ConfigWindow';
+import RunWindow from './RunWindow';
 
 const nodeTypes = { textUpdater: Node };
 
@@ -27,6 +28,7 @@ function Canvas() {
   const menuBarRef = useRef(null);
   const [canvasHeight, setCanvasHeight] = useState(window.innerHeight);
   const [showConfig, setShowConfig] = useState(false);
+  const [showRun, setShowRun] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -140,7 +142,7 @@ function Canvas() {
   };
 
   const handleRun = () => {
-    alert('No Imp this button');
+    setShowRun(true);
   };
 
   const handleConfig = () => {
@@ -209,6 +211,7 @@ function Canvas() {
         </div>
       )}
       {showConfig && <ConfigWindow onClose={() => setShowConfig(false)} />}
+      {showRun && <RunWindow onClose={() => setShowRun(false)} />}
     </div>
   );
 }
