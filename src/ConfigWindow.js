@@ -1,14 +1,17 @@
 // ConfigWindow.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ConfigManager from './ConfigManager';
 
 function ConfigWindow({ onClose }) {
-  const [setting1, setSetting1] = useState(ConfigManager.getSettings().setting1);
-  const [setting2, setSetting2] = useState(ConfigManager.getSettings().setting2);
+  const settings = ConfigManager.getSettings();
+
+  const [llmModel, setLlmModel] = useState(settings.llmModel);
+  const [backendScript, setBackendScript] = useState(settings.backendScript);
+  const [workingFolder, setWorkingFolder] = useState(settings.workingFolder);
 
   const handleSave = () => {
-    ConfigManager.setSettings(setting1, setting2);
+    ConfigManager.setSettings(llmModel, backendScript, workingFolder);
     onClose();
   };
 
@@ -18,21 +21,31 @@ function ConfigWindow({ onClose }) {
         <h2>Settings</h2>
         <div>
           <label>
-            Setting 1:
+            LLM model:
             <input 
               type="text" 
-              value={setting1} 
-              onChange={(e) => setSetting1(e.target.value)} 
+              value={llmModel} 
+              onChange={(e) => setLlmModel(e.target.value)} 
             />
           </label>
         </div>
         <div>
           <label>
-            Setting 2:
+            Backend script:
             <input 
-              type="checkbox" 
-              checked={setting2} 
-              onChange={(e) => setSetting2(e.target.checked)} 
+              type="text" 
+              value={backendScript} 
+              onChange={(e) => setBackendScript(e.target.value)} 
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Working folder:
+            <input 
+              type="text" 
+              value={workingFolder} 
+              onChange={(e) => setWorkingFolder(e.target.value)} 
             />
           </label>
         </div>

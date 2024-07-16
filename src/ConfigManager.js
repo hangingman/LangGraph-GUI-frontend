@@ -6,25 +6,29 @@ class ConfigManager {
             return ConfigManager.instance;
         }
 
-        this.setting1 = localStorage.getItem('setting1') || '';
-        this.setting2 = localStorage.getItem('setting2') === 'true';
+        this.llmModel = localStorage.getItem('llmModel') || 'gemma2';
+        this.backendScript = localStorage.getItem('backendScript') || 'cd working && python backend.py --graph graph.json --llm gemma2 --tee output.log';
+        this.workingFolder = localStorage.getItem('workingFolder') || 'working';
 
         ConfigManager.instance = this;
     }
 
     getSettings() {
         return {
-            setting1: this.setting1,
-            setting2: this.setting2,
+            llmModel: this.llmModel,
+            backendScript: this.backendScript,
+            workingFolder: this.workingFolder,
         };
     }
 
-    setSettings(newSetting1, newSetting2) {
-        this.setting1 = newSetting1;
-        this.setting2 = newSetting2;
+    setSettings(newLlmModel, newBackendScript, newWorkingFolder) {
+        this.llmModel = newLlmModel;
+        this.backendScript = newBackendScript;
+        this.workingFolder = newWorkingFolder;
 
-        localStorage.setItem('setting1', newSetting1);
-        localStorage.setItem('setting2', newSetting2);
+        localStorage.setItem('llmModel', newLlmModel);
+        localStorage.setItem('backendScript', newBackendScript);
+        localStorage.setItem('workingFolder', newWorkingFolder);
     }
 }
 
