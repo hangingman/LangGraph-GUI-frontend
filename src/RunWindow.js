@@ -1,41 +1,29 @@
 // RunWindow.js
 
-import React, { useState } from 'react';
+import React from 'react';
 
 function RunWindow({ onClose }) {
-  const [runMode, setRunMode] = useState('default');
-  const [logLevel, setLogLevel] = useState('info');
-
-  const handleRun = () => {
-    // Placeholder for running the Python script
-    alert(`Running script with mode: ${runMode} and log level: ${logLevel}`);
+  const handleRun = async () => {
+    try {
+      console.log("Attempting to send request to Flask server...");
+      const response = await fetch('http://127.0.0.1:5000/run', {
+        method: 'POST',
+      });
+      console.log("Received response from Flask server...");
+      const text = await response.text();
+      console.log("Response text:", text);
+      alert(text); // Display the response in an alert for simplicity
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error: ' + error.message);
+    }
     onClose();
   };
 
   return (
     <div style={styles.overlay}>
       <div style={styles.window}>
-        <h2>Run Settings</h2>
-        <div>
-          <label>
-            Run Mode:
-            <input 
-              type="text" 
-              value={runMode} 
-              onChange={(e) => setRunMode(e.target.value)} 
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Log Level:
-            <input 
-              type="text" 
-              value={logLevel} 
-              onChange={(e) => setLogLevel(e.target.value)} 
-            />
-          </label>
-        </div>
+        <h2>Run Script</h2>
         <button onClick={handleRun}>Run</button>
         <button onClick={onClose}>Cancel</button>
       </div>
