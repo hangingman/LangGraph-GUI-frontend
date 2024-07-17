@@ -32,6 +32,9 @@ function FileTransmit({ onUploadComplete }) {
         }
       } catch (error) {
         alert('Upload failed: ' + error.message);
+      } finally {
+        // Clear the input value to allow the same file to be selected again if needed
+        event.target.value = null;
       }
     }
   };

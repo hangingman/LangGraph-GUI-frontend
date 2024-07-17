@@ -1,3 +1,5 @@
+// Canvas.js
+
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import ReactFlow, { MiniMap, Controls, Background, useEdgesState, useReactFlow } from 'reactflow';
 import 'reactflow/dist/style.css';
@@ -149,7 +151,7 @@ function Canvas() {
   };
 
   const handleUploadComplete = () => {
-    handleLoad();
+    console.log('Upload complete.');
   };
 
   return (
