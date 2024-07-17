@@ -4,8 +4,13 @@ import React, { useState } from 'react';
 
 function RunWindow({ onClose }) {
   const [responseMessage, setResponseMessage] = useState('');
+  const [running, setRunning] = useState(false);
 
   const handleRun = async () => {
+    if (running) return;
+    setRunning(true);
+    setResponseMessage('');
+
     try {
       console.log("Attempting to send request to Flask server...");
       const response = await fetch('http://127.0.0.1:5000/run', {
@@ -31,7 +36,31 @@ function RunWindow({ onClose }) {
       }
     } catch (error) {
       console.error('Error:', error);
-      setResponseMessage('Error: ' + error.message);
+      setResponseMessage(prev => prev + '\nError: ' + error.message);
+      alert('Error: ' + error.message);
+    } finally {
+      setRunning(false);  // Ensure running is set to false when done or if there's an error
+    }
+  };
+
+  const handleStop = async () => {
+    if (!running) return;
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/stop', {
+        method: 'POST',
+      });
+      const message = await response.text();
+      console.log(message);
+      setResponseMessage(prev => prev + '\n' + message);
+      if (response.ok) {
+        setRunning(false);  // Reset running state if stop was successful
+      } else {
+        console.error('Failed to stop script:', message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setResponseMessage(prev => prev + '\nError: ' + error.message);
       alert('Error: ' + error.message);
     }
   };
@@ -40,7 +69,8 @@ function RunWindow({ onClose }) {
     <div style={styles.overlay}>
       <div style={styles.window}>
         <h2>Run Script</h2>
-        <button onClick={handleRun}>Run</button>
+        <button onClick={handleRun} disabled={running}>Run</button>
+        <button onClick={handleStop} disabled={!running}>Stop</button>
         <button onClick={onClose}>Cancel</button>
         <div style={styles.response}>
           <pre>{responseMessage}</pre>
