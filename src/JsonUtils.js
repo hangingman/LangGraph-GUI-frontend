@@ -1,4 +1,4 @@
-// FileUtils.js
+// JsonUtils.js
 
 import NodeData from './NodeData';
 import { createEdge } from './Edge';

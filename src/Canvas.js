@@ -6,7 +6,7 @@ import 'reactflow/dist/style.css';
 import Node, { addNode, deleteNode } from './Node';
 import { createEdge, deleteEdge } from './Edge';
 import { createConditionEdge, deleteConditionEdge } from './ConditionEdge';
-import { saveJson, loadJson } from './FileUtils';
+import { saveJson, loadJson } from './JsonUtils';
 import { useGraphManager, GraphManagerProvider } from './GraphManagerContext';
 import ConfigWindow from './ConfigWindow';
 import RunWindow from './RunWindow';
