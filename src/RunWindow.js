@@ -1,6 +1,6 @@
 // RunWindow.js
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function RunWindow({ onClose }) {
   const [responseMessage, setResponseMessage] = useState('');
@@ -65,13 +65,35 @@ function RunWindow({ onClose }) {
     }
   };
 
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/status', {
+          method: 'GET',
+        });
+        const status = await response.json();
+        setRunning(status.running);
+      } catch (error) {
+        console.error('Error checking status:', error);
+      }
+    };
+
+    const interval = setInterval(checkStatus, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleCancel = async () => {
+    await handleStop();
+    onClose();
+  };
+
   return (
     <div style={styles.overlay}>
       <div style={styles.window}>
         <h2>Run Script</h2>
         <button onClick={handleRun} disabled={running}>Run</button>
         <button onClick={handleStop} disabled={!running}>Stop</button>
-        <button onClick={onClose}>Cancel</button>
+        <button onClick={handleCancel}>Cancel</button>
         <div style={styles.response}>
           <pre>{responseMessage}</pre>
         </div>
