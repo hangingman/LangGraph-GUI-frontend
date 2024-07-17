@@ -11,11 +11,24 @@ function RunWindow({ onClose }) {
       const response = await fetch('http://127.0.0.1:5000/run', {
         method: 'POST',
       });
-      console.log("Received response from Flask server...");
-      const text = await response.text();
-      console.log("Response text:", text);
-      setResponseMessage(text);
-      alert(text); // Display the response in an alert for simplicity
+
+      if (!response.body) {
+        throw new Error('ReadableStream not yet supported in this browser.');
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+
+      while (!done) {
+        const { value, done: streamDone } = await reader.read();
+        done = streamDone;
+        if (value) {
+          const chunk = decoder.decode(value, { stream: !done });
+          console.log("Received chunk:", chunk);
+          setResponseMessage(prev => prev + chunk);
+        }
+      }
     } catch (error) {
       console.error('Error:', error);
       setResponseMessage('Error: ' + error.message);
@@ -30,7 +43,7 @@ function RunWindow({ onClose }) {
         <button onClick={handleRun}>Run</button>
         <button onClick={onClose}>Cancel</button>
         <div style={styles.response}>
-          {responseMessage}
+          <pre>{responseMessage}</pre>
         </div>
       </div>
     </div>
