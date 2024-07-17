@@ -40,26 +40,23 @@ function FileTransmit({ onUploadComplete }) {
   };
 
   const handleDownloadClick = async () => {
-    const filename = prompt('Enter the filename to download:');
-    if (filename) {
-      try {
-        const response = await fetch(`http://127.0.0.1:5000/download/${filename}`);
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-        } else {
-          const errorData = await response.json();
-          alert('Download failed: ' + errorData.error);
-        }
-      } catch (error) {
-        alert('Download failed: ' + error.message);
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/download`);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'workspace.zip';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } else {
+        const errorData = await response.json();
+        alert('Download failed: ' + errorData.error);
       }
+    } catch (error) {
+      alert('Download failed: ' + error.message);
     }
   };
 
