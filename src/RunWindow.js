@@ -1,8 +1,10 @@
 // RunWindow.js
 
-import React from 'react';
+import React, { useState } from 'react';
 
 function RunWindow({ onClose }) {
+  const [responseMessage, setResponseMessage] = useState('');
+
   const handleRun = async () => {
     try {
       console.log("Attempting to send request to Flask server...");
@@ -12,12 +14,13 @@ function RunWindow({ onClose }) {
       console.log("Received response from Flask server...");
       const text = await response.text();
       console.log("Response text:", text);
+      setResponseMessage(text);
       alert(text); // Display the response in an alert for simplicity
     } catch (error) {
       console.error('Error:', error);
+      setResponseMessage('Error: ' + error.message);
       alert('Error: ' + error.message);
     }
-    onClose();
   };
 
   return (
@@ -26,6 +29,9 @@ function RunWindow({ onClose }) {
         <h2>Run Script</h2>
         <button onClick={handleRun}>Run</button>
         <button onClick={onClose}>Cancel</button>
+        <div style={styles.response}>
+          {responseMessage}
+        </div>
       </div>
     </div>
   );
@@ -49,6 +55,18 @@ const styles = {
     padding: '20px',
     borderRadius: '5px',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
+    width: '80%',
+    height: '80%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  response: {
+    flex: 1,
+    overflowY: 'auto',
+    backgroundColor: '#f0f0f0',
+    padding: '10px',
+    borderRadius: '5px',
+    marginTop: '10px',
   },
 };
 
