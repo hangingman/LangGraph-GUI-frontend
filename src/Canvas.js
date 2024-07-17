@@ -1,5 +1,3 @@
-// Canvas.js
-
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import ReactFlow, { MiniMap, Controls, Background, useEdgesState, useReactFlow } from 'reactflow';
 import 'reactflow/dist/style.css';
@@ -10,6 +8,7 @@ import { saveJson, loadJson } from './FileUtils';
 import { useGraphManager, GraphManagerProvider } from './GraphManagerContext';
 import ConfigWindow from './ConfigWindow';
 import RunWindow from './RunWindow';
+import FileTransmit from './FileTransmit';
 
 const nodeTypes = { textUpdater: Node };
 
@@ -149,12 +148,8 @@ function Canvas() {
     setShowConfig(true);
   };
 
-  const handleUpload = () => {
-    alert('Upload button clicked');
-  };
-
-  const handleDownload = () => {
-    alert('Download button clicked');
+  const handleUploadComplete = () => {
+    handleLoad();
   };
 
   return (
@@ -165,8 +160,7 @@ function Canvas() {
         <button onClick={handleLoad}>Load</button>
         <button onClick={handleRun}>Run</button>
         <button onClick={handleConfig}>Config</button>
-        <button onClick={handleUpload}>Upload</button>
-        <button onClick={handleDownload}>Download</button>
+        <FileTransmit onUploadComplete={handleUploadComplete} />
       </nav>
       <div style={{ height: `${canvasHeight}px`, width: '100%' }}>
         <ReactFlow 
