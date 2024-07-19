@@ -7,13 +7,13 @@ For more detail, please see [frontend doc](https://langgraph-gui.github.io/Front
 ![LangGraph-GUI](cover.webp)
 
 ## Usage
-For environment build up
+Build up environment:
 
 ```
 npm install
 ```
 
-In the project directory, you can run:
+Run up frontend:
 ```
 npm start
 ```
