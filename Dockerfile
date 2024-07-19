@@ -1,5 +1,5 @@
 # LangGraph-GUI/Dockerfile
-FROM node:latest
+FROM node:20
 
 # Create and set the working directory
 WORKDIR /app
