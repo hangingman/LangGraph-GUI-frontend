@@ -10,10 +10,12 @@ function FileTransmit({ onUploadComplete }) {
   };
 
   const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
+    const files = event.target.files;
+    if (files.length > 0) {
       const formData = new FormData();
-      formData.append('file', file);
+      for (const file of files) {
+        formData.append('files', file);
+      }
 
       try {
         const response = await fetch('http://127.0.0.1:5000/upload', {
@@ -22,7 +24,7 @@ function FileTransmit({ onUploadComplete }) {
         });
 
         if (response.ok) {
-          alert('File successfully uploaded');
+          alert('Files successfully uploaded');
           if (onUploadComplete) {
             onUploadComplete();
           }
@@ -33,7 +35,7 @@ function FileTransmit({ onUploadComplete }) {
       } catch (error) {
         alert('Upload failed: ' + error.message);
       } finally {
-        // Clear the input value to allow the same file to be selected again if needed
+        // Clear the input value to allow the same files to be selected again if needed
         event.target.value = null;
       }
     }
@@ -67,6 +69,7 @@ function FileTransmit({ onUploadComplete }) {
         ref={fileInputRef}
         style={{ display: 'none' }}
         onChange={handleFileChange}
+        multiple // Allow multiple file selection
       />
       <button onClick={handleUploadClick}>Upload</button>
       <button onClick={handleDownloadClick}>Download</button>
