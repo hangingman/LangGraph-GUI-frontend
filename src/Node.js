@@ -1,6 +1,6 @@
 // Node.js
 
-import { memo, useCallback, useState, useEffect } from 'react';
+import { memo, useCallback, useState, useEffect, useRef } from 'react';
 import NodeLayout from './NodeLayout';
 import { useGraphManager } from './GraphManagerContext';
 
@@ -68,10 +68,24 @@ function Node({ data, isConnectable, id, prevs }) {
     setNodes,
   } = useGraphManager();
   const [nodeData, setNodeData] = useState(data);
+  const changeBuffer = useRef({});
 
   useEffect(() => {
     setNodeData(data);
   }, [data]);
+
+  const handleChange = useCallback((event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    const isComposingEvent = event.nativeEvent.isComposing;
+
+    if (isComposingEvent) {
+      changeBuffer.current = { [name]: value };
+    } else {
+      updateNodeData((prevData) => ({ ...prevData, ...changeBuffer.current }));
+      changeBuffer.current = {};
+    }
+  }, [id, setNodes]);
 
   const updateNodeData = (updateFn) => {
     setNodes((nds) => {
@@ -87,22 +101,6 @@ function Node({ data, isConnectable, id, prevs }) {
     });
   };
 
-  const onChangeName = useCallback((evt) => {
-    updateNodeData((prevData) => ({ ...prevData, name: evt.target.value }));
-  }, [id, setNodes]);
-
-  const onChangeDescription = useCallback((evt) => {
-    updateNodeData((prevData) => ({ ...prevData, description: evt.target.value }));
-  }, [id, setNodes]);
-
-  const onChangeType = useCallback((evt) => {
-    updateNodeData((prevData) => ({ ...prevData, type: evt.target.value }));
-  }, [id, setNodes]);
-
-  const onChangeTool = useCallback((tool) => {
-    updateNodeData((prevData) => ({ ...prevData, tool }));
-  }, [id, setNodes]);
-
   const onResize = useCallback((width, height) => {
     updateNodeData((prevData) => ({ ...prevData, width, height }));
   }, [id, setNodes]);
@@ -111,10 +109,10 @@ function Node({ data, isConnectable, id, prevs }) {
     <NodeLayout
       data={nodeData}
       isConnectable={isConnectable}
-      onChangeName={onChangeName}
-      onChangeDescription={onChangeDescription}
-      onChangeType={onChangeType}
-      onChangeTool={onChangeTool}
+      onChangeName={handleChange}
+      onChangeDescription={handleChange}
+      onChangeType={handleChange}
+      onChangeTool={handleChange}
       onResize={onResize}
       prevs={prevs}
     />

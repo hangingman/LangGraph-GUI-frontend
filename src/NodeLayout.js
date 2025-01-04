@@ -11,13 +11,7 @@ const handleStyle = {
   background: '#555',
 };
 
-function NodeLayout({ data, isConnectable, onChangeName, onChangeDescription, onChangeType, onResize, onChangeTool }) {
-  const handleTypeChange = useCallback((evt) => {
-    const newType = evt.target.value;
-    onChangeType(evt);
-    // Update the node data type
-    data.type = newType;
-  }, [onChangeType, data]);
+function NodeLayout({ data, isConnectable, handleChange, onResize, onCompositionStart, onCompositionEnd }) {
 
   const handleResize = useCallback((evt, { width, height }) => {
     onResize(width, height);
@@ -42,7 +36,7 @@ function NodeLayout({ data, isConnectable, onChangeName, onChangeDescription, on
         minHeight={200} 
         onResize={handleResize}
       >
-        <ResizeIcon />
+      <ResizeIcon />
       </NodeResizeControl>
       <Handle
         type="target"
@@ -77,8 +71,7 @@ function NodeLayout({ data, isConnectable, onChangeName, onChangeDescription, on
           <select
             id="type"
             name="type"
-            value={data.type}
-            onChange={handleTypeChange}
+            onChange={handleChange}
             className="nodrag"
             style={{ width: 'calc(100% - 20px)' }}
           >
@@ -96,8 +89,7 @@ function NodeLayout({ data, isConnectable, onChangeName, onChangeDescription, on
                 <input
                   id="text"
                   name="text"
-                  value={data.name}
-                  onChange={onChangeName}
+                  onChange={handleChange}
                   className="nodrag"
                   style={{ width: 'calc(100% - 20px)' }}
                 />
@@ -109,8 +101,7 @@ function NodeLayout({ data, isConnectable, onChangeName, onChangeDescription, on
                 <input
                   id="tool"
                   name="tool"
-                  value={data.tool}
-                  onChange={(evt) => onChangeTool(evt.target.value)}
+                  onChange={handleChange}
                   className="nodrag"
                   style={{ width: 'calc(100% - 20px)' }}
                 />
@@ -122,8 +113,7 @@ function NodeLayout({ data, isConnectable, onChangeName, onChangeDescription, on
                 <textarea
                   id="description"
                   name="description"
-                  value={data.description}
-                  onChange={onChangeDescription}
+                  onChange={handleChange}
                   className="nodrag"
                   style={{ width: 'calc(100% - 20px)', height: 'calc(100% - 30px)', resize: 'none' }}
                 />
