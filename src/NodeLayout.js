@@ -76,6 +76,7 @@ function NodeLayout({ data, isConnectable, handleChange, onResize }) {
           <select
             id="type"
             name="type"
+            value={data.type}
             onChange={handleTypeChange}
             className="nodrag"
             style={{ width: 'calc(100% - 20px)' }}
@@ -94,6 +95,7 @@ function NodeLayout({ data, isConnectable, handleChange, onResize }) {
                 <input
                   id="text"
                   name="text"
+                  value={data.name}
                   onChange={handleChange}
                   className="nodrag"
                   style={{ width: 'calc(100% - 20px)' }}
@@ -106,6 +108,7 @@ function NodeLayout({ data, isConnectable, handleChange, onResize }) {
                 <input
                   id="tool"
                   name="tool"
+                  value={data.tool}
                   onChange={handleChange}
                   className="nodrag"
                   style={{ width: 'calc(100% - 20px)' }}
@@ -118,6 +121,7 @@ function NodeLayout({ data, isConnectable, handleChange, onResize }) {
                 <textarea
                   id="description"
                   name="description"
+                  value={data.description}
                   onChange={handleChange}
                   className="nodrag"
                   style={{ width: 'calc(100% - 20px)', height: 'calc(100% - 30px)', resize: 'none' }}
