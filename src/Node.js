@@ -77,7 +77,8 @@ function Node({ data, isConnectable, id, prevs }) {
   const handleChange = useCallback((event) => {
     const name = event.target.name;
     const value = event.target.value;
-    const isComposingEvent = event.nativeEvent.isComposing;
+    // Check if nativeEvent exists and handle IME composition
+    const isComposingEvent = event.nativeEvent?.isComposing || false;
 
     if (isComposingEvent) {
       changeBuffer.current = { [name]: value };
@@ -113,6 +114,7 @@ function Node({ data, isConnectable, id, prevs }) {
       onChangeDescription={handleChange}
       onChangeType={handleChange}
       onChangeTool={handleChange}
+      handleChange={handleChange}
       onResize={onResize}
       prevs={prevs}
     />

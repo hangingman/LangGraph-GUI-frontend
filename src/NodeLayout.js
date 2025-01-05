@@ -11,7 +11,12 @@ const handleStyle = {
   background: '#555',
 };
 
-function NodeLayout({ data, isConnectable, handleChange, onResize, onCompositionStart, onCompositionEnd }) {
+function NodeLayout({ data, isConnectable, handleChange, onResize }) {
+
+  const handleTypeChange = useCallback((evt) => {
+    const newType = evt.target.value;
+    handleChange({ target: { name: 'type', value: newType } });
+  }, [handleChange]);
 
   const handleResize = useCallback((evt, { width, height }) => {
     onResize(width, height);
@@ -71,7 +76,7 @@ function NodeLayout({ data, isConnectable, handleChange, onResize, onComposition
           <select
             id="type"
             name="type"
-            onChange={handleChange}
+            onChange={handleTypeChange}
             className="nodrag"
             style={{ width: 'calc(100% - 20px)' }}
           >
