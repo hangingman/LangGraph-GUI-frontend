@@ -116,28 +116,6 @@ function RunWindow({ onClose }) {
         return () => clearInterval(interval);
     }, []);
 
-    const handleTest = async () => {
-        console.log("handleTest started, url is:", `${SERVER_URL}/test/`); // Log before fetch
-        try {
-            const response = await fetch(`${SERVER_URL}/test/`, {
-                method: 'GET',
-            });
-
-            if (!response.ok) {
-              const errorText = await response.text();
-              console.error("Response not ok:", response.status, errorText);
-              throw new Error(`Failed to fetch from the /test/ endpoint. Status: ${response.status}. Message: ${errorText}`);
-            }
-
-            const data = await response.json();
-            console.log('Test endpoint response:', data);
-            setResponseMessage(prev => prev + '\nTest Response: ' + data.message);
-        } catch (error) {
-            console.error('Error during test request:', error); // More context
-            setResponseMessage(prev => prev + '\nError during test request: ' + error.message);
-        }
-    };
-
     const handleCancel = async () => {
         onClose();
     };
@@ -161,16 +139,9 @@ function RunWindow({ onClose }) {
                     >
                         Cancel
                     </button>
-                    <button
-                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={handleTest}
-                        disabled={running}
-                    >
-                        Test
-                    </button>
                 </div>
                 <div className="flex-1 overflow-y-auto bg-gray-100 p-2 rounded mt-4">
-                    <pre>{responseMessage}</pre>
+                    <pre className="text-left">{responseMessage}</pre>
                 </div>
             </div>
         </div>
