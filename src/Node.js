@@ -68,7 +68,6 @@ function Node({ data, isConnectable, id, prevs }) {
     setNodes,
   } = useGraphManager();
   const [nodeData, setNodeData] = useState(data);
-  const changeBuffer = useRef({});
 
   useEffect(() => {
     setNodeData(data);
@@ -79,11 +78,11 @@ function Node({ data, isConnectable, id, prevs }) {
     const value = event.target.value;
     const isComposingEvent = event.nativeEvent.isComposing;
 
-    if (isComposingEvent) {
-      changeBuffer.current = { [name]: value };
-    } else {
-      updateNodeData((prevData) => ({ ...prevData, ...changeBuffer.current }));
-      changeBuffer.current = {};
+    if (!isComposingEvent) {
+      updateNodeData((prevData) => {
+        const updatedData = Object.assign({}, prevData, { [name]: value });
+        return updatedData;
+      });
     }
   }, [id, setNodes]);
 
@@ -109,10 +108,7 @@ function Node({ data, isConnectable, id, prevs }) {
     <NodeLayout
       data={nodeData}
       isConnectable={isConnectable}
-      onChangeName={handleChange}
-      onChangeDescription={handleChange}
-      onChangeType={handleChange}
-      onChangeTool={handleChange}
+      handleChange={handleChange}
       onResize={onResize}
       prevs={prevs}
     />
