@@ -11,13 +11,7 @@ const handleStyle = {
   background: '#555',
 };
 
-function NodeLayout({ data, isConnectable, onChangeName, onChangeDescription, onChangeType, onResize, onChangeTool }) {
-  const handleTypeChange = useCallback((evt) => {
-    const newType = evt.target.value;
-    onChangeType(evt);
-    // Update the node data type
-    data.type = newType;
-  }, [onChangeType, data]);
+function NodeLayout({ data, isConnectable, handleChange, onResize }) {
 
   const handleResize = useCallback((evt, { width, height }) => {
     onResize(width, height);
@@ -42,7 +36,7 @@ function NodeLayout({ data, isConnectable, onChangeName, onChangeDescription, on
         minHeight={200} 
         onResize={handleResize}
       >
-        <ResizeIcon />
+      <ResizeIcon />
       </NodeResizeControl>
       <Handle
         type="target"
@@ -77,8 +71,8 @@ function NodeLayout({ data, isConnectable, onChangeName, onChangeDescription, on
           <select
             id="type"
             name="type"
-            value={data.type}
-            onChange={handleTypeChange}
+            defaultValue={data.type}
+            onChange={handleChange}
             className="nodrag"
             style={{ width: 'calc(100% - 20px)' }}
           >
@@ -94,10 +88,10 @@ function NodeLayout({ data, isConnectable, onChangeName, onChangeDescription, on
               <div>
                 <label htmlFor="text" style={{ display: 'block', fontSize: '12px' }}>Name:</label>
                 <input
-                  id="text"
-                  name="text"
-                  value={data.name}
-                  onChange={onChangeName}
+                  id="name"
+                  name="name"
+                  defaultValue={data.name}
+                  onChange={handleChange}
                   className="nodrag"
                   style={{ width: 'calc(100% - 20px)' }}
                 />
@@ -109,8 +103,8 @@ function NodeLayout({ data, isConnectable, onChangeName, onChangeDescription, on
                 <input
                   id="tool"
                   name="tool"
-                  value={data.tool}
-                  onChange={(evt) => onChangeTool(evt.target.value)}
+                  defaultValue={data.tool}
+                  onChange={handleChange}
                   className="nodrag"
                   style={{ width: 'calc(100% - 20px)' }}
                 />
@@ -122,8 +116,8 @@ function NodeLayout({ data, isConnectable, onChangeName, onChangeDescription, on
                 <textarea
                   id="description"
                   name="description"
-                  value={data.description}
-                  onChange={onChangeDescription}
+                  defaultValue={data.description}
+                  onChange={handleChange}
                   className="nodrag"
                   style={{ width: 'calc(100% - 20px)', height: 'calc(100% - 30px)', resize: 'none' }}
                 />
