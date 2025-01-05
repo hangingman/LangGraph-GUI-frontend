@@ -11,7 +11,7 @@ const handleStyle = {
   background: '#555',
 };
 
-function NodeLayout({ data, isConnectable, handleChange, onResize, onCompositionStart, onCompositionEnd }) {
+function NodeLayout({ data, isConnectable, handleChange, onResize }) {
 
   const handleResize = useCallback((evt, { width, height }) => {
     onResize(width, height);
@@ -71,6 +71,7 @@ function NodeLayout({ data, isConnectable, handleChange, onResize, onComposition
           <select
             id="type"
             name="type"
+            defaultValue={data.type}
             onChange={handleChange}
             className="nodrag"
             style={{ width: 'calc(100% - 20px)' }}
@@ -87,8 +88,9 @@ function NodeLayout({ data, isConnectable, handleChange, onResize, onComposition
               <div>
                 <label htmlFor="text" style={{ display: 'block', fontSize: '12px' }}>Name:</label>
                 <input
-                  id="text"
-                  name="text"
+                  id="name"
+                  name="name"
+                  defaultValue={data.name}
                   onChange={handleChange}
                   className="nodrag"
                   style={{ width: 'calc(100% - 20px)' }}
@@ -101,6 +103,7 @@ function NodeLayout({ data, isConnectable, handleChange, onResize, onComposition
                 <input
                   id="tool"
                   name="tool"
+                  defaultValue={data.tool}
                   onChange={handleChange}
                   className="nodrag"
                   style={{ width: 'calc(100% - 20px)' }}
@@ -113,6 +116,7 @@ function NodeLayout({ data, isConnectable, handleChange, onResize, onComposition
                 <textarea
                   id="description"
                   name="description"
+                  defaultValue={data.description}
                   onChange={handleChange}
                   className="nodrag"
                   style={{ width: 'calc(100% - 20px)', height: 'calc(100% - 30px)', resize: 'none' }}
