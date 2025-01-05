@@ -1,8 +1,8 @@
 // Node.js
 
-import { memo, useCallback, useState, useEffect, useRef } from 'react';
+import { memo, useCallback, useState, useEffect } from 'react';
 import NodeLayout from './NodeLayout';
-import { useGraphManager } from './GraphManagerContext';
+import { useGraphManager } from './GraphManager';
 
 // Helper functions to remove references
 export const removePrevs = (nodes, nodeId) => {
@@ -119,7 +119,17 @@ export const addNode = (nodes, setNodes, nodeIdCounter, setNodeIdCounter, newPos
   const newNode = {
     id: nodeIdCounter.toString(),
     type: 'textUpdater',
-    data: { name: `Node ${nodeIdCounter}`, description: '', type: 'STEP', nexts: [], true_next: null, false_next: null, width: 200, height: 200 },
+    data: { 
+      name: `Node ${nodeIdCounter}`, 
+      description: '', 
+      type: 'STEP', 
+      ext: { info: '' }, // Initialize ext.info for new nodes
+      nexts: [], 
+      true_next: null, 
+      false_next: null, 
+      width: 200, 
+      height: 200 
+    },
     position: newPosition,
     prevs: []
   };

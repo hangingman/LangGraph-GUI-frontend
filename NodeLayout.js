@@ -1,5 +1,3 @@
-// NodeLayout.js
-
 import React, { useCallback } from 'react';
 import { Handle, Position, NodeResizeControl } from 'reactflow';
 import ResizeIcon from './ResizeIcon';
@@ -12,114 +10,131 @@ const handleStyle = {
 };
 
 function NodeLayout({ data, isConnectable, handleChange, onResize }) {
-
-  const handleResize = useCallback((evt, { width, height }) => {
-    onResize(width, height);
-  }, [onResize]);
+  const handleResize = useCallback(
+    (evt, { width, height }) => {
+      onResize(width, height);
+    },
+    [onResize]
+  );
 
   return (
-    <div 
-      style={{ 
-        border: '1px solid #898989', // Darker boundary color
-        padding: '5px', 
-        borderRadius: '15px', // More rounded corners
-        background: 'white',
-        width: data.width || 200,
-        height: data.height || 200,
-        overflow: 'visible', // Ensure overflow is visible
-        position: 'relative'
-      }}
+    <div
+      className="border border-gray-500 p-2 rounded-xl bg-white overflow-visible relative flex flex-col"
+      style={{ width: data.width || 200, height: data.height || 200 }}
     >
-      <NodeResizeControl 
-        style={{ position: 'absolute', right: 5, bottom: 5 }} 
-        minWidth={200} 
-        minHeight={200} 
+      <NodeResizeControl
+        className="absolute right-1 bottom-1"
+        minWidth={200}
+        minHeight={200}
         onResize={handleResize}
       >
-      <ResizeIcon />
+        <ResizeIcon />
       </NodeResizeControl>
       <Handle
         type="target"
         position={Position.Left}
         isConnectable={isConnectable}
-        style={{ ...handleStyle, left: '-5px', top: 'calc(50% - 5px)' }}
+        className="absolute left-[-5px] top-1/2 -translate-y-1/2"
+        style={handleStyle}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="a"
-        style={{ ...handleStyle, right: '-5px', top: 'calc(50% - 5px)' }}
         isConnectable={isConnectable}
+        className="absolute right-[-5px] top-1/2 -translate-y-1/2"
+        style={handleStyle}
       />
       <Handle
         type="source"
         position={Position.Top}
         id="true"
-        style={{ ...handleStyle, top: '-5px', left: 'calc(50% - 5px)', background: 'green' }}
         isConnectable={isConnectable}
+        className="absolute top-[-5px] left-1/2 -translate-x-1/2 bg-green-500"
+         style={handleStyle}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="false"
-        style={{ ...handleStyle, bottom: '-5px', left: 'calc(50% - 5px)', background: 'red' }}
         isConnectable={isConnectable}
+        className="absolute bottom-[-5px] left-1/2 -translate-x-1/2 bg-red-500"
+         style={handleStyle}
       />
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div className="flex flex-col h-full flex-grow">
         <div>
-          <label htmlFor="type" style={{ display: 'block', fontSize: '12px' }}>Type:</label>
+          <label htmlFor="type" className="block text-xs">
+            Type:
+          </label>
           <select
             id="type"
             name="type"
             defaultValue={data.type}
             onChange={handleChange}
-            className="nodrag"
-            style={{ width: 'calc(100% - 20px)' }}
+            className="nodrag w-full bg-white border border-gray-300 rounded focus:outline-none"
           >
             <option value="START">START</option>
             <option value="STEP">STEP</option>
             <option value="TOOL">TOOL</option>
             <option value="CONDITION">CONDITION</option>
+            <option value="INFO">INFO</option>
           </select>
         </div>
         {data.type !== 'START' && (
           <>
-            {['STEP', 'CONDITION'].includes(data.type) && (
+            {['STEP', 'CONDITION', 'INFO'].includes(data.type) && (
               <div>
-                <label htmlFor="text" style={{ display: 'block', fontSize: '12px' }}>Name:</label>
+                <label htmlFor="name" className="block text-xs">
+                  Name:
+                </label>
                 <input
                   id="name"
                   name="name"
                   defaultValue={data.name}
                   onChange={handleChange}
-                  className="nodrag"
-                  style={{ width: 'calc(100% - 20px)' }}
+                  className="nodrag w-full bg-white border border-gray-300 rounded focus:outline-none"
                 />
               </div>
             )}
             {data.type === 'STEP' && (
               <div>
-                <label htmlFor="tool" style={{ display: 'block', fontSize: '12px' }}>Tool:</label>
+                <label htmlFor="tool" className="block text-xs">
+                  Tool:
+                </label>
                 <input
                   id="tool"
                   name="tool"
                   defaultValue={data.tool}
                   onChange={handleChange}
-                  className="nodrag"
-                  style={{ width: 'calc(100% - 20px)' }}
+                  className="nodrag w-full bg-white border border-gray-300 rounded focus:outline-none"
                 />
               </div>
             )}
-            {['STEP', 'TOOL', 'CONDITION'].includes(data.type) && (
-              <div style={{ flex: 1 }}>
-                <label htmlFor="description" style={{ display: 'block', fontSize: '12px' }}>Description:</label>
+            {['STEP', 'TOOL', 'CONDITION', 'INFO'].includes(data.type) && (
+              <div className="flex-grow">
+                <label htmlFor="description" className="block text-xs">
+                  Description:
+                </label>
                 <textarea
                   id="description"
                   name="description"
                   defaultValue={data.description}
                   onChange={handleChange}
-                  className="nodrag"
-                  style={{ width: 'calc(100% - 20px)', height: 'calc(100% - 30px)', resize: 'none' }}
+                   className="nodrag w-full h-full resize-none bg-white border border-gray-300 rounded focus:outline-none"
+                />
+              </div>
+            )}
+             {data.type === 'INFO' && (
+                <div>
+                <label htmlFor="info" className="block text-xs">
+                  Question:
+                </label>
+                <input
+                  id="info"
+                  name="info"
+                  defaultValue={data.info}
+                  onChange={handleChange}
+                   className="nodrag w-full h-8 bg-white border border-gray-300 rounded focus:outline-none"
                 />
               </div>
             )}

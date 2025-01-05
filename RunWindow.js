@@ -1,138 +1,180 @@
-// RunWindow.js
-
 import React, { useState, useEffect } from 'react';
+import SERVER_URL from '../config';
+import { useGraphManager } from './GraphManager';
+import { convertFlowToJson } from './JsonUtils';
+import ConfigManager from '../ConfigManager';
 
 function RunWindow({ onClose }) {
-  const [responseMessage, setResponseMessage] = useState('');
-  const [running, setRunning] = useState(false);
+    const [responseMessage, setResponseMessage] = useState('');
+    const [running, setRunning] = useState(false);
+    const { username, llmModel, apiKey } = ConfigManager.getSettings();
+    const { nodes, nodeIdCounter } = useGraphManager();
 
-  const handleRun = async () => {
-    if (running) return;
-    setRunning(true);
-    setResponseMessage('');
+    const saveGraphData = async () => {
+        try {
+            const flowData = convertFlowToJson(nodes, nodeIdCounter);
+            const response = await fetch(`${SERVER_URL}/save-graph/${encodeURIComponent(username)}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(flowData),
+            });
 
-    try {
-      console.log("Attempting to send request to Flask server...");
-      const response = await fetch('http://127.0.0.1:5000/run', {
-        method: 'POST',
-      });
+            if (!response.ok) {
+                throw new Error('Failed to save graph data on the server.');
+            }
 
-      if (!response.body) {
-        throw new Error('ReadableStream not yet supported in this browser.');
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let done = false;
-
-      while (!done) {
-        const { value, done: streamDone } = await reader.read();
-        done = streamDone;
-        if (value) {
-          const chunk = decoder.decode(value, { stream: !done });
-          console.log("Received chunk:", chunk);
-          setResponseMessage(prev => prev + chunk);
+            console.log('Graph data successfully saved to server.');
+            setResponseMessage(prev => prev + '\nGraph data successfully saved to server.');
+        } catch (error) {
+            console.error('Error saving graph data:', error);
+            setResponseMessage(prev => prev + '\nError saving graph data: ' + error.message);
+            throw error;
         }
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setResponseMessage(prev => prev + '\nError: ' + error.message);
-      alert('Error: ' + error.message);
-    } finally {
-      setRunning(false);  // Ensure running is set to false when done or if there's an error
-    }
-  };
-
-  const handleStop = async () => {
-    if (!running) return;
-
-    try {
-      const response = await fetch('http://127.0.0.1:5000/stop', {
-        method: 'POST',
-      });
-      const message = await response.text();
-      console.log(message);
-      setResponseMessage(prev => prev + '\n' + message);
-      if (response.ok) {
-        setRunning(false);  // Reset running state if stop was successful
-      } else {
-        console.error('Failed to stop script:', message);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setResponseMessage(prev => prev + '\nError: ' + error.message);
-      alert('Error: ' + error.message);
-    }
-  };
-
-  useEffect(() => {
-    const checkStatus = async () => {
-      try {
-        const response = await fetch('http://127.0.0.1:5000/status', {
-          method: 'GET',
-        });
-        const status = await response.json();
-        setRunning(status.running);
-      } catch (error) {
-        console.error('Error checking status:', error);
-      }
     };
 
-    const interval = setInterval(checkStatus, 1000);
-    return () => clearInterval(interval);
-  }, []);
+    const handleRun = async () => {
+        if (running) return;
+        setRunning(true);
+        setResponseMessage('');
 
-  const handleCancel = async () => {
-    await handleStop();
-    onClose();
-  };
+        try {
+            await saveGraphData();
 
-  return (
-    <div style={styles.overlay}>
-      <div style={styles.window}>
-        <h2>Run Script</h2>
-        <button onClick={handleRun} disabled={running}>Run</button>
-        <button onClick={handleStop} disabled={!running}>Stop</button>
-        <button onClick={handleCancel}>Cancel</button>
-        <div style={styles.response}>
-          <pre>{responseMessage}</pre>
+            console.log("Attempting to send request to Flask server...");
+            const response = await fetch(`${SERVER_URL}/run/${encodeURIComponent(username)}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: username,
+                    llm_model: llmModel,
+                    api_key: apiKey,
+                }),
+            });
+
+            if (!response.body) {
+                throw new Error('ReadableStream not yet supported in this browser.');
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let done = false;
+
+            while (!done) {
+                const { value, done: streamDone } = await reader.read();
+                done = streamDone;
+                if (value) {
+                    const chunk = decoder.decode(value, { stream: !done });
+                    console.log("Received chunk:", chunk);
+                    setResponseMessage(prev => prev + chunk);
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setResponseMessage(prev => prev + '\nError: ' + error.message);
+            alert('Error: ' + error.message);
+        } finally {
+            setRunning(false);
+        }
+    };
+
+    const handleStop = async () => {
+        if (!running) return;
+
+        try {
+            const response = await fetch(`${SERVER_URL}/stop/${encodeURIComponent(username)}`, {
+                method: 'POST',
+            });
+            const message = await response.text();
+            console.log(message);
+            setResponseMessage(prev => prev + '\n' + message);
+            if (response.ok) {
+                setRunning(false);
+            } else {
+                console.error('Failed to stop script:', message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setResponseMessage(prev => prev + '\nError: ' + error.message);
+            alert('Error: ' + error.message);
+        }
+    };
+
+    useEffect(() => {
+        const checkStatus = async () => {
+            try {
+                const response = await fetch(`${SERVER_URL}/status/${encodeURIComponent(username)}`, {
+                    method: 'GET',
+                });
+                const status = await response.json();
+                setRunning(status.running);
+            } catch (error) {
+                console.error('Error checking status:', error);
+            }
+        };
+
+        const interval = setInterval(checkStatus, 2000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const handleTest = async () => {
+        console.log("handleTest started, url is:", `${SERVER_URL}/test/`); // Log before fetch
+        try {
+            const response = await fetch(`${SERVER_URL}/test/`, {
+                method: 'GET',
+            });
+
+            if (!response.ok) {
+              const errorText = await response.text();
+              console.error("Response not ok:", response.status, errorText);
+              throw new Error(`Failed to fetch from the /test/ endpoint. Status: ${response.status}. Message: ${errorText}`);
+            }
+
+            const data = await response.json();
+            console.log('Test endpoint response:', data);
+            setResponseMessage(prev => prev + '\nTest Response: ' + data.message);
+        } catch (error) {
+            console.error('Error during test request:', error); // More context
+            setResponseMessage(prev => prev + '\nError during test request: ' + error.message);
+        }
+    };
+
+    const handleCancel = async () => {
+        onClose();
+    };
+
+    return (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-1000">
+            <div className="bg-white p-5 rounded shadow-md w-4/5 h-4/5 flex flex-col">
+                <h2 className="text-lg font-bold mb-4">Run Script</h2>
+                <div className="flex mb-4">
+                    <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                        onClick={handleRun}
+                        disabled={running}
+                    >
+                        Run
+                    </button>
+                    <button
+                        className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2"
+                        onClick={handleCancel}
+                        disabled={running}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={handleTest}
+                        disabled={running}
+                    >
+                        Test
+                    </button>
+                </div>
+                <div className="flex-1 overflow-y-auto bg-gray-100 p-2 rounded mt-4">
+                    <pre>{responseMessage}</pre>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
-
-const styles = {
-  overlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  window: {
-    backgroundColor: 'white',
-    padding: '20px',
-    borderRadius: '5px',
-    boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
-    width: '80%',
-    height: '80%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  response: {
-    flex: 1,
-    overflowY: 'auto',
-    backgroundColor: '#f0f0f0',
-    padding: '10px',
-    borderRadius: '5px',
-    marginTop: '10px',
-  },
-};
 
 export default RunWindow;
