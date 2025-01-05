@@ -160,19 +160,14 @@ function Canvas() {
      console.log('Upload complete.');
   };
 
-    const handleChatBot = () => {
-      navigate('/');
-    };
-
   return (
     <div className="h-screen w-full">
       <nav ref={menuBarRef} className="p-2 border-b border-gray-300 mb-2">
-       <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleChatBot}>ChatBot</button>
-        <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleNew}>New Graph</button>
-        <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleSave}>Save Graph</button>
-        <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleLoad}>Load Graph</button>
-        <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleRun}>Run Graph</button>
-        <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleConfig}>Config</button>
+        <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold px-2 rounded" onClick={handleNew}>New Graph</button>
+        <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold px-2 rounded" onClick={handleSave}>Save Graph</button>
+        <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold px-2 rounded" onClick={handleLoad}>Load Graph</button>
+        <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold px-2 rounded" onClick={handleRun}>Run Graph</button>
+        <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold px-2 rounded" onClick={handleConfig}>Config</button>
         <FileTransmit onUploadComplete={handleUploadComplete} />
       </nav>
       <div style={{ height: `${canvasHeight}px` }} className="w-full">
@@ -204,13 +199,13 @@ function Canvas() {
           }}
         >
           {contextMenu.isNode ? (
-            <button onClick={handleDeleteNode} className="block bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete Node</button>
+            <button onClick={handleDeleteNode} className="block bg-red-500 hover:bg-red-700 text-white font-bold px-2 rounded">Delete Node</button>
           ) : contextMenu.isEdge ? (
-            <button onClick={handleDeleteEdge} className="block bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete Edge</button>
+            <button onClick={handleDeleteEdge} className="block bg-red-500 hover:bg-red-700 text-white font-bold px-2 rounded">Delete Edge</button>
           ) : (
-            <button onClick={handleAddNode} className="block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Add Node</button>
+            <button onClick={handleAddNode} className="block bg-green-500 hover:bg-green-700 text-white font-bold px-2 rounded">Add Node</button>
           )}
-          <button onClick={handleCloseContextMenu} className="block bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Cancel</button>
+          <button onClick={handleCloseContextMenu} className="block bg-gray-500 hover:bg-gray-700 text-white font-bold px-2 rounded">Cancel</button>
         </div>
       )}
        {showConfig && <ConfigWindow onClose={() => setShowConfig(false)} />}

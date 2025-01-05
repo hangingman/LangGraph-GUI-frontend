@@ -96,25 +96,29 @@ function FileTransmit({ onUploadComplete }) {
   const isUsernameValid = username && username.length > 0;
 
   return (
-    <div>
-      <div style={{ display: 'flex', gap: '10px' }}>
+    <div className="flex flex-col">
+      <div className="flex space-x-2 mb-2">
         <input
           type="file"
           ref={fileInputRef}
-          style={{ display: 'none' }}
+          className="hidden"
           onChange={handleFileChange}
-          multiple // Allow multiple file selection
+          multiple
         />
-        <button onClick={handleUploadClick}>Upload Files to Server</button>
-        <button onClick={handleDownloadClick}>Get Files from Server</button>
-        <button onClick={handleCleanCacheClick}>Clean Cache at Server</button>
+        <button onClick={handleUploadClick} className="bg-blue-500 hover:bg-blue-700 text-white font-semibold px-1 rounded focus:outline-none focus:shadow-outline text-sm">
+            Upload Files to Server
+        </button>
+        <button onClick={handleDownloadClick} className="bg-green-500 hover:bg-green-700 text-white font-semibold px-1 rounded focus:outline-none focus:shadow-outline text-sm">
+            Get Files from Server
+        </button>
+        <button onClick={handleCleanCacheClick} className="bg-yellow-500 hover:bg-yellow-700 text-white font-semibold px-1 rounded focus:outline-none focus:shadow-outline text-sm">
+            Clean Server Cache
+        </button>
 
         <div
-          style={{
-            color: isUsernameValid ? 'green' : 'red',
-          }}
+          className={`font-bold ${isUsernameValid ? 'text-green-500' : 'text-red-500'}`}
         >
-          {isUsernameValid ? `User: ${username}` : 'ERROR: Wrong user'}
+          {isUsernameValid ? `User: ${username}` : 'User: undefined'}
         </div>
       </div>
     </div>

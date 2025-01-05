@@ -1,6 +1,6 @@
 // Node.js
 
-import { memo, useCallback, useState, useEffect } from 'react';
+import { memo, useCallback, useState, useEffect, useRef } from 'react';
 import NodeLayout from './NodeLayout';
 import { useGraphManager } from './GraphManager';
 
@@ -64,10 +64,11 @@ export const removeNexts = (nodes, nodeId) => {
 
 function Node({ data, isConnectable, id, prevs }) {
   const {
-    nodes,
-    setNodes,
+      setNodes,
   } = useGraphManager();
   const [nodeData, setNodeData] = useState(data);
+  const changeBuffer = useRef({});
+
 
   useEffect(() => {
     setNodeData(data);
@@ -78,11 +79,12 @@ function Node({ data, isConnectable, id, prevs }) {
     const value = event.target.value;
     const isComposingEvent = event.nativeEvent.isComposing;
 
-    if (!isComposingEvent) {
-      updateNodeData((prevData) => {
-        const updatedData = Object.assign({}, prevData, { [name]: value });
-        return updatedData;
-      });
+    if (isComposingEvent) {
+      changeBuffer.current = { ...changeBuffer.current, [name]: value };
+    }
+    else {
+      updateNodeData((prevData) => ({ ...prevData, ...changeBuffer.current, [name]: value }));
+      changeBuffer.current = {};
     }
   }, [id, setNodes]);
 
@@ -119,16 +121,16 @@ export const addNode = (nodes, setNodes, nodeIdCounter, setNodeIdCounter, newPos
   const newNode = {
     id: nodeIdCounter.toString(),
     type: 'textUpdater',
-    data: { 
-      name: `Node ${nodeIdCounter}`, 
-      description: '', 
-      type: 'STEP', 
+    data: {
+      name: `Node ${nodeIdCounter}`,
+      description: '',
+      type: 'STEP',
       ext: { info: '' }, // Initialize ext.info for new nodes
-      nexts: [], 
-      true_next: null, 
-      false_next: null, 
-      width: 200, 
-      height: 200 
+      nexts: [],
+      true_next: null,
+      false_next: null,
+      width: 200,
+      height: 200
     },
     position: newPosition,
     prevs: []
